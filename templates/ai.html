@@ -10,7 +10,7 @@
 	<!-- <link rel="stylesheet" type="text/css" href="static/opensans-font.css"/> -->
 	<link rel="stylesheet" type="text/css" href="static/line-awesome-font-awesome.min.css"/>
 	<!-- Jquery -->
-	<link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+	<!-- <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css"> -->
 	<!-- Main Style Css -->
 	<link rel="stylesheet" type="text/css" href="static/style.css"/>
 	
@@ -26,18 +26,17 @@
 				<div class="form-row">
 					
 					<label>Generate Test Cases and User Stories for any requirement.</label>
-					<textarea maxlength="300" id="user_requirement" rows="10" cols="50" class="input-text"></textarea>
+					<textarea maxlength="500" id="user_requirement" rows="10" cols="50" class="input-text"></textarea>
 					
 				</div>
 				
 				<div class="form-row-last">
-					<label style="color: red" id="validation"></label><br/>
+					<label style="color: red" id="validation"></label>
 					
 					<input id="submitRequirements_TestCases" method="POST" type="button" value="Test Cases" class="register" onclick="gatherTestCasesDataToSend()">
 					<input id="submitRequirements_UserStories" method="POST" type="button" value="User Stories" class="register" onclick="gatherUserStoriesDataToSend()">
 					<input id="clearBox" type="button" value="Clear" class="register" onclick="clearAll()">
-					
-					
+					<input id="LogInButton" type="button" value="Google Login" class="register" onclick="logIn()">
 					<!-- <input id="likedIt" method="POST" type="button" value="Liked it" class="register" onclick="dsfasfsd()">
 					<input id="hatedIt" type="button" value="Did not like" class="register" onclick="sdfsadf()"> -->
 					
@@ -47,8 +46,8 @@
 				
 			</form>
 			<div class="form-left">
-				<h2 id="TestorStoriesType">Answer</h2>
-				<p id="outputAnswerToDisplay" class="text-1">Your AI generated answer will appear here.
+				<h2 id="TestorStoriesType">Output</h2>
+				<p id="outputAnswerToDisplay" class="text-1">Your AI generated output will appear here.
 					<br/>
 					<br/>
 					 TestEra.Club is your virtual testing assistant that can: <br/>
@@ -60,9 +59,8 @@
 				</p>
 				
 				<div class="form-left-last">
-					<input id="LogInButton" type="button" value="Login with Google" class="account" onclick="logIn()">
 					<input id="shareButton" type="button" class="account" value="Share this" onclick="shareURL()">
-					<input id="copyButton" type="button" class="account" value="Copy Answer" onclick="copyOutput()">
+					<input id="copyButton" type="button" class="account" value="Copy Output" onclick="copyOutput()">
 				</div>
 				<!-- <label for="disclamer" style="color:red">Note - Do not enter personal information</label><br/><br/> -->
 				<label id="loggedinemail"></label><br/>
@@ -71,8 +69,17 @@
 				<label></label><a href="/contact" target="_blank">Contact Us</a><br/>
 				<label></label><a href="/terms" target="_blank">Terms & Conditions</a><br/>
 				<label></label><a href="/contact" target="_blank">Advertise here</a>
+
 				</div>
 
+				
+				<br/>
+				<label>KEEP IN MIND</label><br/>
+				<label>-Use good judgment when sharing outputs, and attribute them to your name.</label><br/>
+				<label>-Requests submitted to our models may be used to train and improve future models.</label><br/>
+				<label>-Our default models' training data cuts off in 2021, so they may not have knowledge of current events.</label><br/>
+				
+				
 			</div>
 		</div>
 	</div>
