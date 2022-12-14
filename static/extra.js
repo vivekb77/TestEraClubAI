@@ -118,3 +118,4 @@ function shareImage(){
 // server installation needed
 // pip3 install openai
 // pip3 install python-dotenv --- for env variables
+

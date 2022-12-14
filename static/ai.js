@@ -1,7 +1,8 @@
 
 //login start
 var userId=null;
-console.log(userId);
+var totalTokensUsedByUserToday;
+
 
 checkLogin();
 function checkLogin() {
@@ -13,7 +14,7 @@ function checkLogin() {
             document.getElementById("loggedinemail").style.visibility = "hidden";
             document.getElementById("logoutButton").style.visibility = "hidden";
             console.log("not user1");
-            console.log(userId);
+
         }
         if(user){
             var userisAorNot = user.isAnonymous.toString();
@@ -24,7 +25,7 @@ function checkLogin() {
                  document.getElementById("loggedinemail").style.visibility = "hidden";
                  document.getElementById("logoutButton").style.visibility = "hidden";
                  console.log("not user2");
-                 console.log(userId);
+
             }
             if(userisAorNot === "false"){
                //if user is logged in
@@ -35,7 +36,8 @@ function checkLogin() {
             document.getElementById("loggedinemail").innerText = "Logged in as "+user.email.slice(0, 25);  // email display first 15 chars
             console.log("user");
             userId = user.uid;
-            console.log(userId);
+
+            getTotalTokensUsedToday();  //update the total tokens used at page load
 
             }
             
@@ -57,12 +59,12 @@ firebase.auth().signInWithRedirect(provider);
       if (result.credential) {
         /** @type {firebase.auth.OAuthCredential} */
         analytics.logEvent('Login successful', { name: ''});
-        console.log("login successful");
+
 
       }
    
 analytics.logEvent('Login attempted', { name: ''});
-console.log("login attempted");
+
 
     }).catch((error) => {
       // Handle Errors here.
@@ -93,31 +95,6 @@ function logOut(){
 
 // login end
 
-//keep adding user used tokens to db start
-
-function tokensUsedByUser(){
-   
-
-    const database = firebase.database();
- 
-     
-     database.ref('/UserUsedTokens/' +userId).update({ 
-     totaltokensused:firebase.database.ServerValue.increment(totaltokensused)}),
-    
-    database.ref('/UserUsedTokens/' +userId).update({ 
-    querytokensused:firebase.database.ServerValue.increment(querytokensused)}),
-
-    database.ref('/UserUsedTokens/' +userId).update({ 
-    answertokensused:firebase.database.ServerValue.increment(answertokensused)})
-
-    // database.ref('/UserUsedTokens/' +userId).update({ 
-    // lastUpdatedDate:firebase.database.ServerValue.set(firebase.database.ServerValue.TIMESTAMP)})
-
-   
-}
-
-//add user used tokens to db end
-
 
 //to do on page load start
 analytics.logEvent('TestEra Virtual Assistant page visited', { name: ''});
@@ -136,60 +113,70 @@ var TestorStoriesType
 
  //called on test cases button click
 function gatherTestCasesDataToSend(){
-
-//only logged in users can query
-if(userId == null){
-    document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate Test Cases";
-}
-
+    console.log(totalTokensUsedByUserToday);
     //only logged in users can query
-if(userId !== null){
-    document.getElementById('submitRequirements_UserStories').disabled=true;
-  
-    document.getElementById('shareButton').value="Share this";
-    document.getElementById('copyButton').disabled=true;
-    document.getElementById("shareButton").disabled = true;
-    document.getElementById('validation').innerText="";  
-    
-    //validate if field is not empty. //this is the input sent to AI
-    var  queryByUser = document.getElementById('user_requirement').value.trim();  
-    
-    if (queryByUser==null || queryByUser==""){  
-        document.getElementById('validation').innerText = "Enter something";
-         return false;  
-    } if(queryByUser.length>300){  
-        document.getElementById('validation').innerText = "Too long, 300 chars max";
-        return false;  
-    }  
+    if(userId == null){
+        document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate Test Cases";
+    }
 
-    var  showProgress = document.getElementById('outputAnswerToDisplay');
-    showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
-    
-    document.getElementById('TestorStoriesType').innerText = "Test Cases"
-    document.getElementById('copyButton').value="Copy Test Cases";
+        //only logged in users can query
+    if(userId !== null){
 
-    // for adding to DB
-    input = queryByUser.trim();
+        if(totalTokensUsedByUserToday > 5000)
+        {
+            document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try tomorrow.";
+            rpT7Y6a8WRF();
+        }
 
-    document.getElementById('submitRequirements_TestCases').value="Thinking...";  
-    document.getElementById('submitRequirements_TestCases').disabled = true; 
-    
+        if(totalTokensUsedByUserToday <= 5000)
+        {
+        
+            document.getElementById('submitRequirements_UserStories').disabled=true;
+        
+            document.getElementById('shareButton').value="Share this";
+            document.getElementById('copyButton').disabled=true;
+            document.getElementById("shareButton").disabled = true;
+            document.getElementById('validation').innerText="";  
+            
+            //validate if field is not empty. //this is the input sent to AI
+            var  queryByUser = document.getElementById('user_requirement').value.trim();  
+            
+            if (queryByUser==null || queryByUser==""){  
+                document.getElementById('validation').innerText = "Enter something";
+                return false;  
+            } if(queryByUser.length>500){  
+                document.getElementById('validation').innerText = "Too long, 300 chars max";
+                return false;  
+            }  
 
-    TestorStoriesType = "testcases"
-    //first moderate query send requirements to python and get the AI generated result
+            var  showProgress = document.getElementById('outputAnswerToDisplay');
+            showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
+            
+            document.getElementById('TestorStoriesType').innerText = "Test Cases"
+            document.getElementById('copyButton').value="Copy Test Cases";
 
-    moderateContent(queryByUser,TestorStoriesType);
+            // for adding to DB
+            input = queryByUser.trim();
 
-    //log event
-    TestCasesButtonClicked();
+            document.getElementById('submitRequirements_TestCases').value="Thinking...";  
+            document.getElementById('submitRequirements_TestCases').disabled = true; 
+            
 
-}
+            TestorStoriesType = "testcases"
+            //first moderate query send requirements to python and get the AI generated result
+
+            moderateContent(queryByUser,TestorStoriesType);
+
+            //log event
+            TestCasesButtonClicked();
+        }
+    }
    
 }
 
  //called on user stories button click
  function gatherUserStoriesDataToSend(){
-
+    console.log(totalTokensUsedByUserToday);
     //only logged in users can query
     if(userId == null){
         document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate User Stories";
@@ -197,45 +184,57 @@ if(userId !== null){
 
     //only logged in users can query
     if(userId !== null){
-        document.getElementById('shareButton').value="Share this";
-        document.getElementById('copyButton').disabled=true;
-        document.getElementById("shareButton").disabled = true;
-        document.getElementById('validation').innerText="";  
-    
-        //validate if field is not empty. //this is the input sent to AI
-        var  queryByUser = document.getElementById('user_requirement').value.trim();  
 
-        if (queryByUser==null || queryByUser==""){  
-            document.getElementById('validation').innerText = "Enter something";
-            return false;  
-        } if(queryByUser.length>500){  
-            document.getElementById('validation').innerText = "Too long, 500 chars max";
-            return false;  
-        }  
+        if(totalTokensUsedByUserToday > 5000)
+        {
+            document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try tomorrow.";
+            rpT7Y6a8WRF();
+        }
 
-        var  showProgress = document.getElementById('outputAnswerToDisplay');
-        showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
+        if(totalTokensUsedByUserToday <= 5000)
+        {
+            document.getElementById('shareButton').value="Share this";
+            document.getElementById('copyButton').disabled=true;
+            document.getElementById("shareButton").disabled = true;
+            document.getElementById('validation').innerText="";  
+        
+            //validate if field is not empty. //this is the input sent to AI
+            var  queryByUser = document.getElementById('user_requirement').value.trim();  
+
+            if (queryByUser==null || queryByUser==""){  
+                document.getElementById('validation').innerText = "Enter something";
+                return false;  
+            } if(queryByUser.length>500){  
+                document.getElementById('validation').innerText = "Too long, 500 chars max";
+                return false;  
+            }  
+
+            var  showProgress = document.getElementById('outputAnswerToDisplay');
+            showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
+            
+
+            document.getElementById('TestorStoriesType').innerText = "User Stories"
+            document.getElementById('submitRequirements_TestCases').disabled=true;
+            document.getElementById('copyButton').value="Copy User Stories";
+        
+            // for adding to DB
+            input = queryByUser.trim();
+
+            document.getElementById('submitRequirements_UserStories').value="Thinking...";  
+            document.getElementById('submitRequirements_UserStories').disabled = true; 
         
 
-        document.getElementById('TestorStoriesType').innerText = "User Stories"
-        document.getElementById('submitRequirements_TestCases').disabled=true;
-        document.getElementById('copyButton').value="Copy User Stories";
+            TestorStoriesType = "userstories";
+            //first moderate query send requirements to python and get the AI generated result
+            moderateContent(queryByUser,TestorStoriesType);
+
+            //log event
+            UserStoriesButtonClicked();
     
-        // for adding to DB
-        input = queryByUser.trim();
-
-        document.getElementById('submitRequirements_UserStories').value="Thinking...";  
-        document.getElementById('submitRequirements_UserStories').disabled = true; 
-    
-
-        TestorStoriesType = "userstories";
-        //first moderate query send requirements to python and get the AI generated result
-         moderateContent(queryByUser,TestorStoriesType);
-
-        //log event
-        UserStoriesButtonClicked();
+        }
     }
 }
+
 
 
 //moderate user query and warn of content violates policies
@@ -255,33 +254,32 @@ function moderateContent(queryByUser,TestorStoriesType){
         var parsedData = JSON.parse(isQueryContentBad1);
         isQueryContentBad = parsedData.results[0].flagged.toString();  
        
-        console.log(isQueryContentBad);
+
 
         // if value is true don't display output and show warning
         if (isQueryContentBad == "true"){
             document.getElementById('validation').innerText="This Query violates our content policies, no output is displayed.";
             document.getElementById('outputAnswerToDisplay').innerText="This Query violates our content policies, no output is displayed.";  
-            // document.getElementById('TestorStoriesType').style.color="red"
-            // document.getElementById('outputAnswerToDisplay').style.color="red"
+
             document.getElementById('TestorStoriesType').innerText = "Bad request";
             document.getElementById('submitRequirements_TestCases').value="Test Cases";  
             document.getElementById('submitRequirements_TestCases').disabled=false;
 
             document.getElementById('submitRequirements_UserStories').value="User Stories";  
             document.getElementById('submitRequirements_UserStories').disabled=false;
-            // add user to DB
-            addBadUserToDB();
+
+            beYwbUH4XJ2F6bPYUefH();
 
         }
 
         if (isQueryContentBad == "false"){
             if(TestorStoriesType == "testcases"){
                 askAI(queryByUser,TestorStoriesType);
-                console.log("test cases");
+
             }
             if(TestorStoriesType == "userstories"){
                 askAI(queryByUser,TestorStoriesType);
-                console.log("stories");
+
             }
 
         }
@@ -452,9 +450,86 @@ function copyOutput(){
     //logged in user -- add tokens used with its own row
     //but if user is not logged in a row for all users with undefined key is updated , this will hold all non logged users total used tokens
     tokensUsedByUser(); 
-    
+    addtokensUsedByUserDetailed();
 
 }
+
+
+//keep adding user used tokens to db start
+
+function tokensUsedByUser(){
+   
+
+    const database = firebase.database();
+ 
+     
+     database.ref('/UserUsedTokens/' +userId).update({ 
+     totaltokensused:firebase.database.ServerValue.increment(totaltokensused)}),
+    
+    database.ref('/UserUsedTokens/' +userId).update({ 
+    querytokensused:firebase.database.ServerValue.increment(querytokensused)}),
+
+    database.ref('/UserUsedTokens/' +userId).update({ 
+    answertokensused:firebase.database.ServerValue.increment(answertokensused)})
+
+    // database.ref('/UserUsedTokens/' +userId).update({ 
+    // lastUpdatedDate:firebase.database.ServerValue.set(firebase.database.ServerValue.TIMESTAMP)})
+
+   
+}
+
+//add user used tokens to db end
+
+function addtokensUsedByUserDetailed(){
+   
+    const database = firebase.database();
+    const usersRef = database.ref('/tokensUsedByUserDetailed');
+    const autoId = usersRef.push().key
+    
+    usersRef.child(autoId).set({
+    
+     userId:userId,
+     totaltokensused: totaltokensused,
+     createdDate: firebase.database.ServerValue.TIMESTAMP,
+     
+    })
+    getTotalTokensUsedToday(); //update the total tokens used
+}
+
+
+
+function getTotalTokensUsedToday(){
+
+
+totalTokensUsedByUserToday = 0;
+
+const database = firebase.database();
+   
+database.ref('/tokensUsedByUserDetailed').orderByChild("userId").equalTo(userId) 
+   .once("value",function(ALLRecords){
+       ALLRecords.forEach(
+           function(CurrentRecord) {
+              
+   var totalTokensUsedByUserToday1 = CurrentRecord.val().totaltokensused;
+   var createdDate1 = CurrentRecord.val().createdDate;
+   
+    var createdDate = new Date(createdDate1).toLocaleDateString(); 
+    var todaysDate = new Date().toLocaleDateString();   
+
+   //add all tokens used by user in the same day 
+    if(createdDate === todaysDate){
+
+        totalTokensUsedByUserToday = totalTokensUsedByUserToday+totalTokensUsedByUserToday1;
+    }
+
+   });     
+   
+  
+   });
+
+
+}
+
 
 function updateURLandTitle(){
 
@@ -618,11 +693,11 @@ function affiliate2(){
     }
 
 
- function addBadUserToDB(){
+ function beYwbUH4XJ2F6bPYUefH(){
    
     
     const database = firebase.database();
-    const usersRef = database.ref('/BadUsers');
+    const usersRef = database.ref('/beYwbUH4XJ2F6bPYUefH');
     const autoId = usersRef.push().key
     
     usersRef.child(autoId).set({
@@ -634,6 +709,19 @@ function affiliate2(){
     })
   
 
+}
+
+function rpT7Y6a8WRF(){
+    const database = firebase.database();
+    const usersRef = database.ref('/rpT7Y6a8WRF');
+    const autoId = usersRef.push().key
+    
+    usersRef.child(autoId).set({
+    
+     userId:userId,
+     createdDate: firebase.database.ServerValue.TIMESTAMP,
+     
+    }) 
 }
 
 
