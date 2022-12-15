@@ -29,7 +29,7 @@
 					<label>For Devs and QAs looking to come up with the best test cases.</label>
 					<label>Google gives you answers that SEOs and content marketers want you to read, TestEra creates answers to the questions YOU asked.</label>
 					<textarea maxlength="500" id="user_requirement" rows="10" cols="50" class="input-text"></textarea>
-					
+	
 				</div>
 				
 				<div class="form-row-last">
@@ -39,25 +39,36 @@
 					<input id="submitRequirements_UserStories" method="POST" type="button" value="User Stories" class="register" onclick="gatherUserStoriesDataToSend()">
 					<input id="clearBox" type="button" value="Clear" class="register" onclick="clearAll()">
 					<input id="LogInButton" type="button" value="Google Login" class="register" onclick="logIn()">
-					<label>For general questions<a href="https://www.dictionaryv2.com/" target="_blank">use this APP</a></label>
-					
 
+					<label>For general questions <a href="https://www.dictionaryv2.com/" target="_blank">use this APP</a></label>
+					
 				</div>
 				
-				
+
 			</form>
+	
 			<div class="form-left">
+				
 				<h2 id="TestorStoriesType">Output</h2>
+				
+				<div id="loader" class="loader">
+					<div class="inner one"></div>
+					<div class="inner two"></div>
+					<div class="inner three"></div>
+				  </div>
+
 				<p id="outputAnswerToDisplay" class="text-1">Your AI generated output will appear here.
 					<br/>
 					<br/>
 					 TestEra.Club is your virtual testing assistant that can: <br/>
 					- Generate test cases<br/>
+					
 					- Generate user stories<br/>
 					
 					<br/>
 					Ask your requirements multiple times with different wording and then put everything together.
 				</p>
+			
 				
 				<div class="form-left-last">
 					<input id="shareButton" type="button" class="account" value="Share this" onclick="shareURL()">
@@ -133,9 +144,7 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 	<script src="static/ai.js"></script>
 
-	
-	
-	
+
 </body>
 
 </html>

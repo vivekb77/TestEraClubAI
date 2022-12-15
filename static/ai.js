@@ -114,6 +114,7 @@ var TestorStoriesType
  //called on test cases button click
 function gatherTestCasesDataToSend(){
     console.log(totalTokensUsedByUserToday);
+
     //only logged in users can query
     if(userId == null){
         document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate Test Cases";
@@ -130,14 +131,7 @@ function gatherTestCasesDataToSend(){
 
         if(totalTokensUsedByUserToday <= 3000)
         {
-        
-            document.getElementById('submitRequirements_UserStories').disabled=true;
-        
-            document.getElementById('shareButton').value="Share this";
-            document.getElementById('copyButton').disabled=true;
-            document.getElementById("shareButton").disabled = true;
-            document.getElementById('validation').innerText="";  
-            
+           
             //validate if field is not empty. //this is the input sent to AI
             var  queryByUser = document.getElementById('user_requirement').value.trim();  
             
@@ -149,9 +143,17 @@ function gatherTestCasesDataToSend(){
                 return false;  
             }  
 
+            document.getElementById("loader").removeAttribute("hidden");
+            document.getElementById('shareButton').value="Share this";
+            document.getElementById('copyButton').disabled=true;
+            document.getElementById("shareButton").disabled = true;
+            document.getElementById('validation').innerText="";  
+
             var  showProgress = document.getElementById('outputAnswerToDisplay');
             showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
             
+            document.getElementById('submitRequirements_UserStories').disabled=true;
+        
             document.getElementById('TestorStoriesType').innerText = "Test Cases"
             document.getElementById('copyButton').value="Copy Test Cases";
 
@@ -177,6 +179,8 @@ function gatherTestCasesDataToSend(){
  //called on user stories button click
  function gatherUserStoriesDataToSend(){
     console.log(totalTokensUsedByUserToday);
+
+    
     //only logged in users can query
     if(userId == null){
         document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate User Stories";
@@ -193,10 +197,6 @@ function gatherTestCasesDataToSend(){
 
         if(totalTokensUsedByUserToday <= 3000)
         {
-            document.getElementById('shareButton').value="Share this";
-            document.getElementById('copyButton').disabled=true;
-            document.getElementById("shareButton").disabled = true;
-            document.getElementById('validation').innerText="";  
         
             //validate if field is not empty. //this is the input sent to AI
             var  queryByUser = document.getElementById('user_requirement').value.trim();  
@@ -208,6 +208,13 @@ function gatherTestCasesDataToSend(){
                 document.getElementById('validation').innerText = "Too long, 500 chars max";
                 return false;  
             }  
+
+
+            document.getElementById("loader").removeAttribute("hidden");
+            document.getElementById('shareButton').value="Share this";
+            document.getElementById('copyButton').disabled=true;
+            document.getElementById("shareButton").disabled = true;
+            document.getElementById('validation').innerText="";  
 
             var  showProgress = document.getElementById('outputAnswerToDisplay');
             showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
@@ -343,6 +350,8 @@ function displayOutput(responsefromAI){
     let querytokensused1 = parsedData.usage.prompt_tokens;
     let answertokensused1 = parsedData.usage.completion_tokens;
 
+    document.getElementById("loader").setAttribute("hidden","");
+
     //display the result on the label
     const  outputLabel = document.getElementById('outputAnswerToDisplay');
     outputLabel.innerText = cleanData.slice(0, 2000);  
@@ -396,6 +405,7 @@ function clearAll(){
     document.title = "TestEra.Club";
 
     analytics.logEvent('Clear All clicked', { name: ''});
+    document.getElementById("loader").setAttribute("hidden","");
 
 }
 
@@ -602,6 +612,9 @@ function getDataOfSharedQuestion(){
     var  textAreaplaceholederText1 = document.getElementById('user_requirement');
     textAreaplaceholederText1.value = input.trim();
 
+    document.getElementById("loader").setAttribute("hidden","");
+
+
     var  placeholderTextLabel = document.getElementById('outputAnswerToDisplay');
     placeholderTextLabel.innerText = output.trim();
     
@@ -666,7 +679,8 @@ function getDataOfPlaceholderContent(){
         var  textAreaplaceholederText1 = document.getElementById('user_requirement');
         textAreaplaceholederText1.innerText = textAreaplaceholeder;
 
-            
+        document.getElementById("loader").setAttribute("hidden","");
+    
         var  textAreaplaceholederText1 = document.getElementById('user_requirement');
         textAreaplaceholederText1.value = placeholderTextArray[randomNum].placeholderText;
 
