@@ -13,20 +13,27 @@ app = Flask(__name__)
 openai.api_key = "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"
 
 
-@app.route('/contact')
-def contact():
+@app.route('/ContactUs')
+def ContactUs():
     return render_template('contact.html')
 
-@app.route('/terms')
-def terms():
-    return render_template('terms.html')    
+@app.route('/TermsOfService')
+def TermsOfService():
+    return render_template('TermsOfService.html') 
 
+@app.route('/PrivacyPolicy')
+def PrivacyPolicy():
+    return render_template('PrivacyPolicy.html')
 
-# all code for personal assistant
+@app.route('/UsageGuidelines')
+def UsageGuidelinesguidelines():
+    return render_template('UsageGuidelines.html')        
+
 
 @app.route('/')
 def ai():
     return render_template('ai.html')
+
 
 @app.route('/askAI',methods = ['POST','GET'])
 def callPythonScriptPA():

@@ -122,13 +122,13 @@ function gatherTestCasesDataToSend(){
         //only logged in users can query
     if(userId !== null){
 
-        if(totalTokensUsedByUserToday > 5000)
+        if(totalTokensUsedByUserToday > 3000)
         {
-            document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try tomorrow.";
+            document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try again tomorrow.";
             rpT7Y6a8WRF();
         }
 
-        if(totalTokensUsedByUserToday <= 5000)
+        if(totalTokensUsedByUserToday <= 3000)
         {
         
             document.getElementById('submitRequirements_UserStories').disabled=true;
@@ -185,13 +185,13 @@ function gatherTestCasesDataToSend(){
     //only logged in users can query
     if(userId !== null){
 
-        if(totalTokensUsedByUserToday > 5000)
+        if(totalTokensUsedByUserToday > 3000)
         {
-            document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try tomorrow.";
+            document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try again tomorrow.";
             rpT7Y6a8WRF();
         }
 
-        if(totalTokensUsedByUserToday <= 5000)
+        if(totalTokensUsedByUserToday <= 3000)
         {
             document.getElementById('shareButton').value="Share this";
             document.getElementById('copyButton').disabled=true;
