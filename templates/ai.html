@@ -13,7 +13,7 @@
 	<!-- <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css"> -->
 	<!-- Main Style Css -->
 	<link rel="stylesheet" type="text/css" href="static/style.css"/>
-	
+
 		
 </head>
 <body class="form-v4">
@@ -27,14 +27,15 @@
 					
 					<label>Generate Test Cases and User Stories for any requirement.</label>
 					<label>For Devs and QAs looking to come up with the best test cases.</label>
-					<label>Google gives you answers that SEOs and content marketers want you to read, TestEra creates answers to the questions YOU asked.</label>
+					<!-- <label>Google gives you answers that SEOs and content marketers want you to read, TestEra creates answers to the questions YOU asked.</label> -->
 					<textarea maxlength="500" id="user_requirement" rows="10" cols="50" class="input-text"></textarea>
-	
 				</div>
-				
 				<div class="form-row-last">
 					<label style="color: red" id="validation"></label>
-					
+					<label>Set Complexity, try different values for Complexity and see which one gives you the best results. Try 9 for more creative outputs, and 0 for well-defined outputs.</label>
+					<div class="value">0</div>
+					<input id="complexityrange" type="range" min="0" max="10" step="1" value="0">	
+					<br/>
 					<input id="submitRequirements_TestCases" method="POST" type="button" value="Test Cases" class="register" onclick="gatherTestCasesDataToSend()">
 					<input id="submitRequirements_UserStories" method="POST" type="button" value="User Stories" class="register" onclick="gatherUserStoriesDataToSend()">
 					<input id="clearBox" type="button" value="Clear" class="register" onclick="clearAll()">
@@ -75,24 +76,24 @@
 					<input id="copyButton" type="button" class="account" value="Copy Output" onclick="copyOutput()">
 				</div>
 				<!-- <label for="disclamer" style="color:red">Note - Do not enter personal information</label><br/><br/> -->
-				<label id="loggedinemail"></label><br/>
+				<!-- <label id="loggedinemail"></label><br/>
 				<input id="logoutButton" type="button" class="account" value="LogOut" onclick="logOut()"><br/>
 				<div class="form-row-last">
 				<label></label><a href="/ContactUs" target="_blank">Contact Us</a><br/>
 				<label></label><a href="/TermsOfService" target="_blank">Terms of Service</a><br/>
 				<label></label><a href="/PrivacyPolicy" target="_blank">Privacy Policy</a><br/>
-				<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
+				<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a> -->
 
 
 				</div>
 
 				
-				<br/>
+				<!-- <br/>
 				<label>KEEP IN MIND</label><br/>
-				<label>-Use good judgment when sharing outputs, and attribute them to your name. You are responsible for the content you share. Please check anything that TestEra generates thoroughly!</label><br/>
+				<label>-Use good judgment when sharing outputs, and attribute them to your name. You are responsible for the content you share. Please check anything that TestEra generates thoroughly. Do not enter personal information. TestEra is not liable for content displayed or generated.</label><br/>
 				<label>-Training data for our AI cuts off in 2021, so it may not have knowledge of current events.</label><br/>
 				<br/>
-				<label>Powered by OpenAI</label>
+				<label>Powered by OpenAI</label> -->
 				
 			</div>
 		</div>
@@ -115,9 +116,23 @@
 			<!-- ad 2 -->
 			<div class="form-left">
 				<div class="form-left-last">
-						<h2>Understand books & podcasts in 15 minutes</h2>
-						<!-- <h4>Understand books & podcasts in 15 minutes</h4> -->
-						<a href="https://blinkist.o6eiov.net/RykNPg" target="_blank" ><input type="button" value="Check it out" class="account" onclick="affiliate2()"></a>
+						<!-- <h2>Understand books & podcasts in 15 minutes</h2>
+						<a href="https://blinkist.o6eiov.net/RykNPg" target="_blank" ><input type="button" value="Check it out" class="account" onclick="affiliate2()"></a> -->
+					
+						<label id="loggedinemail"></label><br/>
+						<input id="logoutButton" type="button" class="account" value="LogOut" onclick="logOut()"><br/>
+						<div class="form-row-last">
+						<label></label><a href="/ContactUs" target="_blank">Contact Us</a><br/>
+						<label></label><a href="/TermsOfService" target="_blank">Terms of Service</a><br/>
+						<label></label><a href="/PrivacyPolicy" target="_blank">Privacy Policy</a><br/>
+						<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
+						<br/><br/>
+						<label>KEEP IN MIND</label><br/>
+						<label>-Use good judgment when sharing outputs, and attribute them to your name. You are responsible for the content you share. Please check anything that TestEra generates thoroughly. Do not enter personal information. TestEra is not liable for content displayed or generated.</label><br/>
+						<label>-Training data for our AI cuts off in 2021, so it may not have knowledge of current events.</label><br/>
+						<br/>
+						<label>Copyright &copy; TestEra.Club 2022. Powered by OpenAI</label>
+						
 				</div>
 
 			</div>
@@ -125,9 +140,6 @@
 	</div>
 	<!-- //secon row end -->
 	
-	<br/>
-	<br/>
-
 
  <!-- firebase -->
  <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>

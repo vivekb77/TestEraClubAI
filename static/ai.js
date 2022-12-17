@@ -1,7 +1,29 @@
+var elem = document.querySelector('input[type="range"]');
+
+		var rangeValue = function(){
+		  var newValue = elem.value;
+		  var target = document.querySelector('.value');
+		  target.innerHTML = newValue;
+		}
+		
+		elem.addEventListener("input", rangeValue);
+
+
 
 //login start
 var userId=null;
 var totalTokensUsedByUserToday;
+var complexity;
+
+
+//to do on page load start
+analytics.logEvent('TestEra Virtual Assistant page visited', { name: ''});
+//disable the copy button till output is written
+
+document.getElementById("copyButton").disabled = true;
+document.getElementById("shareButton").disabled = true;
+document.getElementById('submitRequirements_TestCases').disabled=false;
+document.getElementById('submitRequirements_UserStories').disabled=false;
 
 
 checkLogin();
@@ -95,19 +117,6 @@ function logOut(){
 
 // login end
 
-
-//to do on page load start
-analytics.logEvent('TestEra Virtual Assistant page visited', { name: ''});
-//disable the copy button till output is written
-
-document.getElementById("copyButton").disabled = true;
-document.getElementById("shareButton").disabled = true;
-document.getElementById('submitRequirements_TestCases').disabled=false;
-document.getElementById('submitRequirements_UserStories').disabled=false;
-
-
-//to do on page load end
-
 var requirements
 var TestorStoriesType
 
@@ -118,6 +127,7 @@ function gatherTestCasesDataToSend(){
     //only logged in users can query
     if(userId == null){
         document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate Test Cases";
+        analytics.logEvent('TestEra tried asking without login', { name: ''});
     }
 
         //only logged in users can query
@@ -126,6 +136,7 @@ function gatherTestCasesDataToSend(){
         if(totalTokensUsedByUserToday > 3000)
         {
             document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try again tomorrow.";
+            analytics.logEvent('TestEra user used till limit', { name: ''});
             rpT7Y6a8WRF();
         }
 
@@ -139,7 +150,7 @@ function gatherTestCasesDataToSend(){
                 document.getElementById('validation').innerText = "Enter something";
                 return false;  
             } if(queryByUser.length>500){  
-                document.getElementById('validation').innerText = "Too long, 300 chars max";
+                document.getElementById('validation').innerText = "Too long, 500 chars max";
                 return false;  
             }  
 
@@ -163,11 +174,15 @@ function gatherTestCasesDataToSend(){
             document.getElementById('submitRequirements_TestCases').value="Thinking...";  
             document.getElementById('submitRequirements_TestCases').disabled = true; 
             
+            var complexityelement = document.getElementById("complexityrange");
+            var complexity1 = complexityelement.value;
+            complexity= complexity1/10;
+            console.log(complexity);
 
             TestorStoriesType = "testcases"
             //first moderate query send requirements to python and get the AI generated result
 
-            moderateContent(queryByUser,TestorStoriesType);
+            moderateContent(queryByUser,TestorStoriesType,complexity);
 
             //log event
             TestCasesButtonClicked();
@@ -184,6 +199,7 @@ function gatherTestCasesDataToSend(){
     //only logged in users can query
     if(userId == null){
         document.getElementById('validation').innerText="Login with Google (takes just ~10 secs) to Generate User Stories";
+        analytics.logEvent('TestEra tried asking without login', { name: ''});
     }
 
     //only logged in users can query
@@ -192,6 +208,7 @@ function gatherTestCasesDataToSend(){
         if(totalTokensUsedByUserToday > 3000)
         {
             document.getElementById('validation').innerText="You've reached the limit of your daily use. Please try again tomorrow.";
+            analytics.logEvent('TestEra user used till limit', { name: ''});
             rpT7Y6a8WRF();
         }
 
@@ -230,10 +247,14 @@ function gatherTestCasesDataToSend(){
             document.getElementById('submitRequirements_UserStories').value="Thinking...";  
             document.getElementById('submitRequirements_UserStories').disabled = true; 
         
+            var complexityelement = document.getElementById("complexityrange");
+            var complexity1 = complexityelement.value;
+            complexity= complexity1/10;
+            console.log(complexity);
 
             TestorStoriesType = "userstories";
             //first moderate query send requirements to python and get the AI generated result
-            moderateContent(queryByUser,TestorStoriesType);
+            moderateContent(queryByUser,TestorStoriesType,complexity);
 
             //log event
             UserStoriesButtonClicked();
@@ -242,11 +263,22 @@ function gatherTestCasesDataToSend(){
     }
 }
 
+function TestCasesButtonClicked(){
+   
+    analytics.logEvent('Generate Test cases Button clicked', { name: ''});
+    
+}
+
+function UserStoriesButtonClicked(){
+   
+    analytics.logEvent('Generate User stories Button clicked', { name: ''});
+    
+}
 
 
 //moderate user query and warn of content violates policies
 var isQueryContentBad;
-function moderateContent(queryByUser,TestorStoriesType){
+function moderateContent(queryByUser,TestorStoriesType,complexity){
 
     let querysentToAI = queryByUser.trim();
 
@@ -281,11 +313,11 @@ function moderateContent(queryByUser,TestorStoriesType){
 
         if (isQueryContentBad == "false"){
             if(TestorStoriesType == "testcases"){
-                askAI(queryByUser,TestorStoriesType);
+                askAI(queryByUser,TestorStoriesType,complexity);
 
             }
             if(TestorStoriesType == "userstories"){
-                askAI(queryByUser,TestorStoriesType);
+                askAI(queryByUser,TestorStoriesType,complexity);
 
             }
 
@@ -301,7 +333,7 @@ function moderateContent(queryByUser,TestorStoriesType){
 
 // get the response generated by AI
 var responsefromAI;
-function askAI(queryByUser,type){
+function askAI(queryByUser,type,complexity){
 
     let querysentToAI = queryByUser;
     
@@ -309,7 +341,7 @@ function askAI(queryByUser,type){
 //send the info requirement as query string
 
     const request = new XMLHttpRequest();
-    request.open("POST",'/askAI?requirement='+querysentToAI+"&type="+type,true);
+    request.open("POST",'/askAI?requirement='+querysentToAI+"&type="+type+"&complexity="+complexity,true);
     
     request.onload=() => {
 
@@ -354,7 +386,8 @@ function displayOutput(responsefromAI){
 
     //display the result on the label
     const  outputLabel = document.getElementById('outputAnswerToDisplay');
-    outputLabel.innerText = cleanData.slice(0, 2000);  
+    outputLabel.innerText = "The Complexity for this output was set to "+complexity*10+"."+"\n\n"+cleanData.slice(0, 2000); 
+    
 
     //enable the copy button
     document.getElementById("copyButton").disabled = false;
@@ -412,9 +445,8 @@ function clearAll(){
 function copyOutput(){
     
 
-     var  outputAnswerToDisplay = document.getElementById('outputAnswerToDisplay');
-     let  textToCopy = outputAnswerToDisplay.innerText;
-     //console.log(textToCopy);
+    //  var  outputAnswerToDisplay = document.getElementById('outputAnswerToDisplay');
+     let  textToCopy = "Query - "+input+"\n"+"Complexity - "+complexity*10+"\nOutput - "+output;
      navigator.clipboard.writeText(textToCopy);
 
      document.getElementById('copyButton').value="Copied..";
@@ -425,15 +457,15 @@ function copyOutput(){
 
 
 
-   //to add to db
-   var input ;
-   var output;
-   let totaltokensused;
-   let querytokensused;
-   let answertokensused;
-    var firebasePrimaryId;
+//to add to db
+var input ;
+var output;
+let totaltokensused;
+let querytokensused;
+let answertokensused;
+var firebasePrimaryId;
 
- function addDataToDB(){
+function addDataToDB(){
    
     const database = firebase.database();
     const usersRef = database.ref('/TestEraAssistant');
@@ -448,6 +480,7 @@ function copyOutput(){
      querytokensused: querytokensused,
      answertokensused:answertokensused,
      TestorStoriesType:TestorStoriesType,
+     complexity:complexity,
      createdDate: firebase.database.ServerValue.TIMESTAMP,
      
     })
@@ -464,6 +497,14 @@ function copyOutput(){
 
 }
 
+function updateURLandTitle(){
+
+    //update the title and url q string each time new query is done
+    // pushState () -- 3 parameters, 1) state object 2) title and a URL)
+    window.history.pushState('', "", '?id='+firebasePrimaryId);
+    // document.title = "TestEra.Club - "+input;
+
+}
 
 //keep adding user used tokens to db start
 
@@ -541,29 +582,6 @@ database.ref('/tokensUsedByUserDetailed').orderByChild("userId").equalTo(userId)
 }
 
 
-function updateURLandTitle(){
-
-    //update the title and url q string each time new query is done
-    // pushState () -- 3 parameters, 1) state object 2) title and a URL)
-    window.history.pushState('', "", '?id='+firebasePrimaryId);
-    // document.title = "TestEra.Club - "+input;
-
-}
-
-
-function TestCasesButtonClicked(){
-   
-    analytics.logEvent('Generate Test cases Button clicked', { name: ''});
-    
-}
-
-function UserStoriesButtonClicked(){
-   
-    analytics.logEvent('Generate User stories Button clicked', { name: ''});
-    
-}
-
-
 //sharing url with friends with the key of data
 
 function shareURL(){
@@ -607,6 +625,7 @@ function getDataOfSharedQuestion(){
                
      input = CurrentRecord.val().input;
      output = CurrentRecord.val().output;
+     complexity =CurrentRecord.val().complexity;
      TestorStoriesType = CurrentRecord.val().TestorStoriesType;
 
     var  textAreaplaceholederText1 = document.getElementById('user_requirement');
@@ -616,7 +635,7 @@ function getDataOfSharedQuestion(){
 
 
     var  placeholderTextLabel = document.getElementById('outputAnswerToDisplay');
-    placeholderTextLabel.innerText = output.trim();
+    placeholderTextLabel.innerText =  "The Complexity for this output was set to "+complexity*10+"."+"\n\n"+output.trim();
     
 
     if(TestorStoriesType == "testcases"){
@@ -739,6 +758,7 @@ function rpT7Y6a8WRF(){
 }
 
 
+
 //who is it for
 //Testers , Developers, Managers, business owners
 
@@ -758,13 +778,13 @@ function rpT7Y6a8WRF(){
         
     //     usersRef.child(autoId).set({
         
-    //     placeholderText: "Eg. Webpage layout",
+    //     placeholderText: "Eg. ecommerce coupon referral system",
     //      createdDate: firebase.database.ServerValue.TIMESTAMP,
          
     //     })
        
     //     firebasePrimaryId = autoId;
-       
+    //     console.log("placeholder added");
         
     // }
     

@@ -39,28 +39,30 @@ def ai():
 def callPythonScriptPA():
     # requirement send from js
     type = request.args.get('type')
+    temperature = float(request.args.get('complexity'))
+    # print(temperature)
 
     if type== "testcases":
-        requirement = "Write test cases for "+request.args.get('requirement')
+        requirement = "Write 30 test cases for "+request.args.get('requirement')
     
     if type== "userstories":
-        requirement = "Write user stories for "+request.args.get('requirement')
+        requirement = "Write 30 user stories for "+request.args.get('requirement')
    
     else:
-         requirement = "Write test cases for "+request.args.get('requirement')
+         requirement = "Write 30 test cases for "+request.args.get('requirement')
 
 
     outputTestCases = openai.Completion.create(
     model="text-davinci-003",
     prompt=requirement,
-    temperature=0,
-    max_tokens=500,
+    temperature=temperature,
+    max_tokens=1000,
     top_p=1,
     frequency_penalty=0.0,
     presence_penalty=0.0
     )
     
-    
+    # print(outputTestCases)
     return outputTestCases
 
 
