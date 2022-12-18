@@ -214,3 +214,77 @@ temp 0 API testing for login page
 28. Verify that the login page is not accessible with wrong encoding of wrong length of credentials
 29. Verify that the login page is not accessible with wrong encoding of wrong encoding of characters in credentials
 30. Verify that the login page is not accessible with wrong encoding of wrong encoding of special characters in credentials
+
+
+//will be obselete
+// var totalTokensUsedByUserToday;
+// function getTotalTokensUsedToday(){
+
+
+// totalTokensUsedByUserToday = 0;
+
+// const database = firebase.database();
+
+// database.ref('/tokensUsedByUserDetailed').orderByChild("userId").equalTo(userId) 
+//    .once("value",function(ALLRecords){
+//        ALLRecords.forEach(
+//            function(CurrentRecord) {
+
+//    var totalTokensUsedByUserToday1 = CurrentRecord.val().totaltokensused;
+//    var createdDate1 = CurrentRecord.val().createdDate;
+
+//     var createdDate = new Date(createdDate1).toLocaleDateString(); 
+//     var todaysDate = new Date().toLocaleDateString();   
+
+//    //add all tokens used by user in the same day 
+//     if(createdDate === todaysDate){
+
+//         totalTokensUsedByUserToday = totalTokensUsedByUserToday+totalTokensUsedByUserToday1;
+//     }
+
+//    });     
+
+
+//    });
+
+
+// }
+
+
+
+//dollarToCredits();
+function dollarToCredits(){
+    dollarAmountPaid = 5.13;
+    creditsToOffer1 = dollarAmountPaid*20;
+    creditsToOffer = Math.round(creditsToOffer1);
+    console.log(creditsToOffer);
+    creditACredit(creditsToOffer);
+}
+
+var creditsToOffer;
+function creditACredit(creditsToOffer){
+
+    var userRef= firebase.database().ref(`myCredits/${userId}`);
+    userRef.update({
+        creditsRemaining: firebase.database.ServerValue.increment(creditsToOffer)
+    });
+
+    getRemainingCredits();
+    creditACreditLog(creditsToOffer);
+}
+
+function creditACreditLog(creditsToOffer){
+
+    const database = firebase.database();
+    const usersRef = database.ref('/creditLog');
+    const autoId = usersRef.push().key;
+
+    usersRef.child(autoId).set({
+    
+     userId:userId,
+     creditsDebited: 0,
+     creditsCredited: creditsToOffer,
+     createdDate: firebase.database.ServerValue.TIMESTAMP,
+     
+    })
+}

@@ -56,7 +56,7 @@ def callPythonScriptPA():
     model="text-davinci-003",
     prompt=requirement,
     temperature=temperature,
-    max_tokens=1000,
+    max_tokens=10,
     top_p=1,
     frequency_penalty=0.0,
     presence_penalty=0.0
