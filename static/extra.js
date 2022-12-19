@@ -1,3 +1,7 @@
+// tips to get better results
+
+// Ask your requirements multiple times with different wording and then put everything together.
+// Try different values for Complexity and see which one gives you the best results. Try 9 for more creative outputs, and 0 for well-defined outputs.
 
 
 //add placeholder to db

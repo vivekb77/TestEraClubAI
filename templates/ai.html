@@ -14,6 +14,7 @@
 	<!-- Main Style Css -->
 	<link rel="stylesheet" type="text/css" href="static/style.css"/>
 
+
 		
 </head>
 <body class="form-v4">
@@ -27,12 +28,16 @@
 					
 					<label>Generate Test Cases and User Stories for any requirement.</label>
 					<label>For Devs and QAs looking to come up with the best test cases.</label>
+				
+					<label>The best way to get better results is to ask your requirements multiple times with different wording and different complexity values.</label>
+					<label>A large number of possible test cases / user stories can be generated this way.</label>
+
 					<!-- <label>Google gives you answers that SEOs and content marketers want you to read, TestEra creates answers to the questions YOU asked.</label> -->
 					<textarea maxlength="500" id="user_requirement" rows="10" cols="50" class="input-text"></textarea>
 				</div>
 				<div class="form-row-last">
 					<label style="color: red" id="validation"></label>
-					<label>Set Complexity, try different values for Complexity and see which one gives you the best results. Try 9 for more creative outputs, and 0 for well-defined outputs.</label>
+					<label>Set Complexity. Try 9 for more creative outputs, and 0 for well-defined outputs.</label>
 					<div class="value">0</div>
 					<input id="complexityrange" type="range" min="0" max="10" step="1" value="0">	
 					<br/>
@@ -42,6 +47,7 @@
 					<input id="LogInButton" type="button" value="Google Login" class="register" onclick="logIn()">
 
 					<label id="remainingCredits"></label>
+					<label></label><a href="/ContactUs" target="_blank">Report an issue</a><br/>
 					<label>For general questions <a href="https://www.dictionaryv2.com/" target="_blank">use this APP</a></label>
 
 					
@@ -109,9 +115,10 @@
 				<!-- <h2>Ads</h2> -->
 				
 				<div class="form-row">
-					<h2>Want more knowledge in less time?</h2>
-					<!-- <h4>Understand books & podcasts in 15 minutes</h4> -->
-					<a href="https://blinkist.o6eiov.net/RykNPg" target="_blank" ><input type="button" value="Get Started" class="register" onclick="affiliate1()"></a>
+					<h2 id="creditsLeft"></h2>
+					<h2>Want more Credits?</h2>
+					<h4>Get 100 credits for $5 or 220 for $10</h4>
+					<a href="/AddCredits" target="_blank" ><input type="button" value="Add Credits" class="register" onclick="addCredits()"></a>
 					
 				</div>	
 			</form>
@@ -130,10 +137,12 @@
 						<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
 						<br/><br/>
 						<label>KEEP IN MIND</label><br/>
-						<label>-Use good judgment when sharing outputs, and attribute them to your name. You are responsible for the content you share. Please check anything that TestEra generates thoroughly. Do not enter personal information. TestEra is not liable for content displayed or generated.</label><br/>
-						<label>-Training data for our AI cuts off in 2021, so it may not have knowledge of current events.</label><br/>
+						<label>-Please check anything that TestEra generates thoroughly. Do not enter personal or sensitive information. TestEra is not liable for content displayed or generated.</label><br/>
+						
 						<br/>
-						<label>Copyright &copy; TestEra.Club 2022. Powered by OpenAI</label>
+						<a href="https://twitter.com/TestEra_Club" target="_blank">Follow us on Twitter</a>
+						<br/>
+						<label>Copyright &copy; TestEra.Club 2022<br/>Powered by OpenAI</label>
 						
 				</div>
 
@@ -157,6 +166,7 @@
 	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 	<script src="static/ai.js"></script>
+
 
 
 </body>

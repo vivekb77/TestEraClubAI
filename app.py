@@ -29,6 +29,10 @@ def PrivacyPolicy():
 def UsageGuidelinesguidelines():
     return render_template('UsageGuidelines.html')        
 
+@app.route('/AddCredits')
+def AddCredits():
+    return render_template('AddCredits.html')        
+
 
 @app.route('/')
 def ai():

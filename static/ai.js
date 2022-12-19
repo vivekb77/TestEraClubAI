@@ -12,9 +12,6 @@ elem.addEventListener("input", rangeValue);
 
 //login start
 var userId = null;
-// var totalTokensUsedByUserToday;
-
-
 
 //to do on page load start
 analytics.logEvent('TestEra Virtual Assistant page visited', { name: '' });
@@ -23,6 +20,9 @@ analytics.logEvent('TestEra Virtual Assistant page visited', { name: '' });
 //disable now, enable them when credits are fetched
 document.getElementById('submitRequirements_TestCases').disabled = true;
 document.getElementById('submitRequirements_UserStories').disabled = true;
+ //enable the copy button
+ document.getElementById("copyButton").disabled = true;
+ document.getElementById("shareButton").disabled = true;
 
 
 
@@ -36,6 +36,9 @@ function checkLogin() {
             document.getElementById("loggedinemail").style.visibility = "hidden";
             document.getElementById("logoutButton").style.visibility = "hidden";
             console.log("not user1");
+            document.getElementById('submitRequirements_TestCases').disabled = false;
+            document.getElementById('submitRequirements_UserStories').disabled = false;
+
 
         }
         if (user) {
@@ -47,6 +50,9 @@ function checkLogin() {
                 document.getElementById("loggedinemail").style.visibility = "hidden";
                 document.getElementById("logoutButton").style.visibility = "hidden";
                 console.log("not user2");
+                document.getElementById('submitRequirements_TestCases').disabled = false;
+                document.getElementById('submitRequirements_UserStories').disabled = false;
+
 
             }
             if (userisAorNot === "false") {
@@ -135,7 +141,7 @@ function gatherTestCasesDataToSend() {
     if (userId !== null) {
 
         if (creditsRemaining <= 0) {
-            document.getElementById('validation').innerText = "As a free user, you've used all 10 credits. Send us a message via the contact us link at the bottom if you'd like more credits.";
+            document.getElementById('validation').innerText = "It costs a lot of $$ to process this queries. As a free user, you've used all of your 10 free credits. If you want to save time, effort and improve the quality of your test cases, add more credits to your account by clicking 'Add Credits' button below.";
             analytics.logEvent('TestEra user used till limit', { name: '' });
             rpT7Y6a8WRF();
         }
@@ -157,6 +163,8 @@ function gatherTestCasesDataToSend() {
             document.getElementById('shareButton').value = "Share this";
             document.getElementById('copyButton').disabled = true;
             document.getElementById("shareButton").disabled = true;
+            document.getElementById("clearBox").disabled = true;
+            
             document.getElementById('validation').innerText = "";
 
             var showProgress = document.getElementById('outputAnswerToDisplay');
@@ -204,7 +212,7 @@ function gatherUserStoriesDataToSend() {
     if (userId !== null) {
 
         if (creditsRemaining <= 0) {
-            document.getElementById('validation').innerText = "As a free user, you've used all 10 credits. Send us a message via the contact us link at the bottom if you'd like more credits.";
+            document.getElementById('validation').innerText = "It costs a lot of $$ to process this queries. As a free user, you've used all of your 10 free credits. If you want to save time, effort and improve the quality of your test cases, add more credits to your account by clicking 'Add Credits' button below.";
             analytics.logEvent('TestEra user used till limit', { name: '' });
             rpT7Y6a8WRF();
         }
@@ -227,6 +235,7 @@ function gatherUserStoriesDataToSend() {
             document.getElementById('shareButton').value = "Share this";
             document.getElementById('copyButton').disabled = true;
             document.getElementById("shareButton").disabled = true;
+            document.getElementById("clearBox").disabled = true;
             document.getElementById('validation').innerText = "";
 
             var showProgress = document.getElementById('outputAnswerToDisplay');
@@ -378,12 +387,13 @@ function displayOutput(responsefromAI) {
 
     //display the result on the label
     const outputLabel = document.getElementById('outputAnswerToDisplay');
-    outputLabel.innerText = "Complexity = " + complexity * 10 + "." + "\n\n" + cleanData.slice(0, 4000);
+    outputLabel.innerText = "Complexity = " + complexity * 10 + "\n\n" + cleanData.slice(0, 5000);
 
 
     //enable the copy button
     document.getElementById("copyButton").disabled = false;
     document.getElementById("shareButton").disabled = false;
+    document.getElementById("clearBox").disabled = false;
 
     // for adding to DB
     output = cleanData;
@@ -437,9 +447,15 @@ function clearAll() {
 
 function copyOutput() {
 
+    if (TestorStoriesType == "testcases") {
+       type1 = "Test Cases";
+    }
+    if (TestorStoriesType == "userstories") {
+        type1 = "User Stories";
+    }
 
     //  var  outputAnswerToDisplay = document.getElementById('outputAnswerToDisplay');
-    let textToCopy = "Query - " + input + "\n" + "Complexity - " + complexity * 10 + "\nOutput - " + output;
+    let textToCopy = "Query for "+type1 + "\n" + "Query - " + input + "\n" + "Complexity - " + complexity * 10 + "\nOutput - " + output;
     navigator.clipboard.writeText(textToCopy);
 
     document.getElementById('copyButton').value = "Copied..";
@@ -485,8 +501,8 @@ function addDataToDB() {
     //add tokens used against the user // will be needed later or data analysis
     //logged in user -- add tokens used with its own row
     //but if user is not logged in a row for all users with undefined key is updated , this will hold all non logged users total used tokens
-    tokensUsedByUser();
-    addtokensUsedByUserKaLog();
+    updateTokensUsedByUser();
+    addmyUsedTokensKaLog();
 
 }
 
@@ -502,21 +518,21 @@ function updateURLandTitle() {
 
 //keep adding user used tokens to db start
 
-function tokensUsedByUser() {
+function updateTokensUsedByUser() {
 
 
     const database = firebase.database();
 
 
-    database.ref('/UserUsedTokens/' + userId).update({
+    database.ref('/myUsedTokens/' + userId).update({
         totaltokensused: firebase.database.ServerValue.increment(totaltokensused)
     }),
 
-        database.ref('/UserUsedTokens/' + userId).update({
+        database.ref('/myUsedTokens/' + userId).update({
             querytokensused: firebase.database.ServerValue.increment(querytokensused)
         }),
 
-        database.ref('/UserUsedTokens/' + userId).update({
+        database.ref('/myUsedTokens/' + userId).update({
             answertokensused: firebase.database.ServerValue.increment(answertokensused)
         })
 
@@ -528,10 +544,10 @@ function tokensUsedByUser() {
 
 //add user used tokens to db end
 
-function addtokensUsedByUserKaLog() {
+function addmyUsedTokensKaLog() {
 
     const database = firebase.database();
-    const usersRef = database.ref('/tokensUsedByUserKaLog');
+    const usersRef = database.ref('/myUsedTokensKaLog');
     const autoId = usersRef.push().key
 
     usersRef.child(autoId).set({
@@ -608,7 +624,7 @@ function getDataOfSharedQuestion() {
 
             if (sharedQueryArray.length == 0)
             {
-                document.getElementById('validation').innerText = "The test cases / user stories you are looking for are not found.";
+                document.getElementById('validation').innerText = "The test cases / user stories you are looking for are not found. Please check the URL. Click clear button and search a new query.";
             }
 
             document.getElementById("loader").setAttribute("hidden", "");
@@ -617,7 +633,7 @@ function getDataOfSharedQuestion() {
             if (sharedQueryArray.length > 0)
             {
                 var placeholderTextLabel = document.getElementById('outputAnswerToDisplay');
-                placeholderTextLabel.innerText = "Complexity = " + sharedQueryArray[0].complexity * 10 + "." + "\n\n" + sharedQueryArray[0].output.trim().slice(0, 4000);
+                placeholderTextLabel.innerText = "Complexity = " + sharedQueryArray[0].complexity * 10 + "\n\n" + sharedQueryArray[0].output.trim().slice(0, 5000);
 
                 var textAreaplaceholederText1 = document.getElementById('user_requirement');
                 textAreaplaceholederText1.value = sharedQueryArray[0].input.trim();     
@@ -692,21 +708,14 @@ function getDataOfPlaceholderContent() {
 }
 //end
 
-function affiliate1() {
+function addCredits() {
 
 
-    analytics.logEvent('Affiliate Link1 clicked', { name: '' });
-
-
-}
-
-function affiliate2() {
-
-
-    analytics.logEvent('Affiliate Link2 clicked', { name: '' });
+    analytics.logEvent('User tried to add credits', { name: '' });
 
 
 }
+
 
 
 function beYwbUH4XJ2F6bPYUefH() {
@@ -832,7 +841,7 @@ function creditACredit(creditsToOffer) {
 function creditACreditLog(creditsToOffer, creditMessage) {
 
     const database = firebase.database();
-    const usersRef = database.ref('/creditsKaLog');
+    const usersRef = database.ref('/myCreditsKaLog');
     const autoId = usersRef.push().key;
 
     usersRef.child(autoId).set({
@@ -861,7 +870,7 @@ function debitACredit() {
 function debitACreditLog() {
 
     const database = firebase.database();
-    const usersRef = database.ref('/creditsKaLog');
+    const usersRef = database.ref('/myCreditsKaLog');
     const autoId = usersRef.push().key;
 
     usersRef.child(autoId).set({
@@ -887,16 +896,19 @@ function getRemainingCredits() {
                     creditsRemaining = CurrentRecord.val().creditsRemaining;
                     // var userId111 = CurrentRecord.val().userId;
 
+                    if(creditsRemaining <= 5){
+                        document.getElementById('remainingCredits').style.color="red";
+                        document.getElementById('creditsLeft').style.color="red";
+                    }
                     document.getElementById('remainingCredits').innerText = creditsRemaining + " Credits Remaining";
-
+                    document.getElementById('creditsLeft').innerText ="Credits Remaining - "+creditsRemaining;
+                    
                 });
 
 
         });
 
 
-    document.getElementById("copyButton").disabled = true;
-    document.getElementById("shareButton").disabled = true;
     document.getElementById('submitRequirements_TestCases').disabled = false;
     document.getElementById('submitRequirements_UserStories').disabled = false;
 
