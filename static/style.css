@@ -296,6 +296,23 @@ body {
 .form-v4-content .form-detail .register:hover {
 	background: #2f73a3;
 }
+.form-v4-content .form-detail .register1 {
+	background: #e05109;
+	border-top-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	width: 130px;
+	border: none;
+	margin: 6px 0 15px 0px;
+	cursor: pointer;
+	color: #fff;
+	font-weight: 700;
+	font-size: 15px;
+}
+.form-v4-content .form-detail .register1:hover {
+	background: #aa4d25;
+}
 .form-v4-content .form-detail .form-row-last input {
 	padding: 12.5px;
 }

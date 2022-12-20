@@ -708,13 +708,6 @@ function getDataOfPlaceholderContent() {
 }
 //end
 
-function addCredits() {
-
-
-    analytics.logEvent('User tried to add credits', { name: '' });
-
-
-}
 
 
 
@@ -912,4 +905,24 @@ function getRemainingCredits() {
     document.getElementById('submitRequirements_TestCases').disabled = false;
     document.getElementById('submitRequirements_UserStories').disabled = false;
 
+}
+
+
+// function addCredits() {
+
+
+//     analytics.logEvent('User tried to add credits', { name: '' });
+
+
+// }
+
+function PayWithStripe(){
+   
+    analytics.logEvent('User tried to add credits', { name: '' });
+    //prod
+    // location.href = 'https://buy.stripe.com/14kbJBdAn5rO9GM7su?client_reference_id='+userId;
+
+    // test
+    location.href = 'https://buy.stripe.com/test_cN27vB6Uv1oOfe0cMM?client_reference_id='+userId;
+    
 }
