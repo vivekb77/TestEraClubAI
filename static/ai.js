@@ -12,6 +12,7 @@ elem.addEventListener("input", rangeValue);
 
 //login start
 var userId = null;
+var user_Email;
 
 //to do on page load start
 analytics.logEvent('TestEra Virtual Assistant page visited', { name: '' });
@@ -38,6 +39,14 @@ function checkLogin() {
             console.log("not user1");
             document.getElementById('submitRequirements_TestCases').disabled = false;
             document.getElementById('submitRequirements_UserStories').disabled = false;
+            document.getElementById('stripePayButton').style.visibility = "hidden";
+            document.getElementById('stripePayButton1').style.visibility = "hidden";
+            document.getElementById('validation1').innerText = "Login to add credits";
+
+            document.getElementById('remainingCredits').innerText = "";
+            document.getElementById('creditsLeft').innerText = "";
+            
+           
 
 
         }
@@ -53,6 +62,11 @@ function checkLogin() {
                 document.getElementById('submitRequirements_TestCases').disabled = false;
                 document.getElementById('submitRequirements_UserStories').disabled = false;
 
+                document.getElementById('stripePayButton').style.visibility = "hidden";
+                document.getElementById('stripePayButton1').style.visibility = "hidden";
+                document.getElementById('validation1').innerText = "Login to add credits";
+                document.getElementById('remainingCredits').innerText = "";
+                document.getElementById('creditsLeft').innerText = "";
 
             }
             if (userisAorNot === "false") {
@@ -64,6 +78,14 @@ function checkLogin() {
                 document.getElementById("loggedinemail").innerText = "Logged in as " + user.email.slice(0, 25);  // email display first 15 chars
                 // console.log("user");
                 userId = user.uid;
+                user_Email=user.email
+
+                document.getElementById('stripePayButton').style.visibility = "visible";
+                document.getElementById('customer_email_ToStripe').value=user_Email;
+
+                document.getElementById('stripePayButton1').style.visibility = "visible";
+                document.getElementById('customer_email_ToStripe1').value=user_Email;
+
                 isUserNew();
 
             }
@@ -808,6 +830,7 @@ function createMyCreditsUser() {
     usersRef.child(userId).set({
 
         userId: userId,
+        user_Email: user_Email,
         creditsRemaining: 0,
 
     })
@@ -894,7 +917,7 @@ function getRemainingCredits() {
                         document.getElementById('creditsLeft').style.color="red";
                     }
                     document.getElementById('remainingCredits').innerText = creditsRemaining + " Credits Remaining";
-                    document.getElementById('creditsLeft').innerText ="Credits Remaining - "+creditsRemaining;
+                    document.getElementById('creditsLeft').innerText = creditsRemaining+" Credits Remaining";
                     
                 });
 
@@ -908,21 +931,26 @@ function getRemainingCredits() {
 }
 
 
-// function addCredits() {
+var urlParams = new URLSearchParams(window.location.search);
+var sessionId = urlParams.get('session_id');
 
+if (sessionId) {
+  fetch('/checkout-session?sessionId=' + sessionId)
+    .then(function (result) {
+      return result.json();
+    })
+    .then(function (session) {
+        if(session.payment_status == "paid" && session.status == "complete"){
+            document.getElementById('paymentStatusLabel').innerText ="Payment was successful, Credits are added to your account. If Credits are not added, refresh the page in a few seconds.";
+        }
+        else{
+            document.getElementById('paymentStatusLabel').innerText ="Something went wrong with the payment. If your payment was successful and credits are not added to your account, please contact us.";
+            
+        }
+     
 
-//     analytics.logEvent('User tried to add credits', { name: '' });
-
-
-// }
-
-function PayWithStripe(){
-   
-    analytics.logEvent('User tried to add credits', { name: '' });
-    //prod
-    // location.href = 'https://buy.stripe.com/14kbJBdAn5rO9GM7su?client_reference_id='+userId;
-
-    // test
-    location.href = 'https://buy.stripe.com/test_cN27vB6Uv1oOfe0cMM?client_reference_id='+userId;
-    
+    })
+    .catch(function (err) {
+      console.log('Error when fetching Checkout session', err);
+    });
 }

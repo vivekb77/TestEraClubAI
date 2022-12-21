@@ -57,7 +57,7 @@
 			</form>
 	
 			<div class="form-left">
-				
+				<h4 id="paymentStatusLabel"></h4>
 				<h2 id="TestorStoriesType">Output</h2>
 				
 				<div id="loader" class="loader">
@@ -110,40 +110,49 @@
 	<!-- //second row start -->
 <div class="page-content">
 		<div class="form-v4-content">
-			<!-- ad 1 -->
-			<form class="form-detail" method="POST">
-				<!-- <h2>Ads</h2> -->
+
+			<form action="/create-checkout-session" class="form-detail" method="POST">
 				
 				<div class="form-row">
 					<h2 id="creditsLeft"></h2>
 					<h2>Want more Credits?</h2>
 					<h4>New user offer. Get 100 credits for <s>₹400</s> ₹200</h4>
-					<!-- <a href="/AddCredits" target="_blank" ><input type="button" value="Add Credits" class="register" onclick="addCredits()"></a> -->
-					<input type="button" value="Buy Credits" class="register" onclick="PayWithStripe()">
+					<label style="color: red" id="validation1"></label>
+					<input hidden type="text" id="customer_email_ToStripe" value="" name="customer_email" />
+					<input hidden type="text" id="productId_ToStripe" value="price_1MH4IlSEETzMR7U39243Xv6d" name="product_Id" />
+					<input id="stripePayButton" type="submit" value="Buy Credits" class="register">
 				</div>	
 			</form>
-			<!-- ad 2 -->
+			
+			<form action="/create-checkout-session" class="form-detail" method="POST">
+				
+				<div class="form-row">
+					<h4>New user offer. Get 200 credits for <s>₹700</s> ₹400</h4>
+					<input hidden type="text" id="customer_email_ToStripe1" value="" name="customer_email" />
+					<input hidden type="text" id="productId_ToStripe1" value="price_1MHSBlSEETzMR7U3K2EL1Jsn" name="product_Id" />
+					<input id="stripePayButton1" type="submit" value="Buy Credits" class="register">
+				</div>	
+			</form>
+
 			<div class="form-left">
 				<div class="form-left-last">
-						<!-- <h2>Understand books & podcasts in 15 minutes</h2>
-						<a href="https://blinkist.o6eiov.net/RykNPg" target="_blank" ><input type="button" value="Check it out" class="account" onclick="affiliate2()"></a> -->
 					
 						<label id="loggedinemail"></label><br/>
 						<input id="logoutButton" type="button" class="account" value="LogOut" onclick="logOut()"><br/>
 						<div class="form-row-last">
-						<label></label><a href="/ContactUs" target="_blank">Contact Us</a><br/>
-						<label></label><a href="/TermsOfService" target="_blank">Terms of Service</a><br/>
-						<label></label><a href="/PrivacyPolicy" target="_blank">Privacy Policy</a><br/>
-						<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
-						<br/><br/>
-						<label>KEEP IN MIND</label><br/>
-						<label>-Please check anything that TestEra generates thoroughly. Do not enter personal or sensitive information. TestEra is not liable for content displayed or generated.</label><br/>
-						
-						<br/>
-						<a href="https://twitter.com/TestEra_Club" target="_blank">Follow us on Twitter</a>
-						<br/>
-						<label>Copyright &copy; TestEra.Club 2022<br/>Powered by OpenAI</label>
-						
+							<label></label><a href="/ContactUs" target="_blank">Contact Us</a><br/>
+							<label></label><a href="/TermsOfService" target="_blank">Terms of Service</a><br/>
+							<label></label><a href="/PrivacyPolicy" target="_blank">Privacy Policy</a><br/>
+							<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
+							<br/><br/>
+							<label>KEEP IN MIND</label><br/>
+							<label>-Please check anything that TestEra generates thoroughly. Do not enter personal or sensitive information. TestEra is not liable for content displayed or generated.</label><br/>
+							
+							<br/>
+							<a href="https://twitter.com/TestEra_Club" target="_blank">Follow us on Twitter</a>
+							<br/>
+							<label>Copyright &copy; TestEra.Club 2022<br/>Powered by OpenAI</label>
+						</div>
 				</div>
 
 			</div>
