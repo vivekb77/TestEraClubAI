@@ -31,6 +31,7 @@
 				
 					<label>The best way to get better results is to ask your requirements multiple times with different wording and different complexity values.</label>
 					<label>A large number of possible test cases / user stories can be generated this way.</label>
+					<label>Try describing your requirements in detail to get better results. Eg. Add a payment gateway to a web app and create a webhook to update the customer data.</label>
 
 					<!-- <label>Google gives you answers that SEOs and content marketers want you to read, TestEra creates answers to the questions YOU asked.</label> -->
 					<textarea maxlength="500" id="user_requirement" rows="10" cols="50" class="input-text"></textarea>
@@ -38,13 +39,13 @@
 				<div class="form-row-last">
 					<label style="color: red" id="validation"></label>
 					<label>Set Complexity. Try 9 for more creative outputs, and 0 for well-defined outputs.</label>
-					<div class="value">0</div>
-					<input id="complexityrange" type="range" min="0" max="10" step="1" value="0">	
+					<div class="value">9</div>
+					<input id="complexityrange" type="range" min="0" max="10" step="1" value="9">	
 					<br/>
 					<input id="submitRequirements_TestCases" method="POST" type="button" value="Test Cases" class="register" onclick="gatherTestCasesDataToSend()">
 					<input id="submitRequirements_UserStories" method="POST" type="button" value="User Stories" class="register" onclick="gatherUserStoriesDataToSend()">
 					<input id="clearBox" type="button" value="Clear" class="register" onclick="clearAll()">
-					<input id="LogInButton" type="button" value="Google Login" class="register1" onclick="logIn()">
+					<input id="LogInButton" type="button" value="Sign In" class="register1" onclick="logIn()">
 
 					<label id="remainingCredits"></label>
 					<label></label><a href="/ContactUs" target="_blank">Report an issue</a><br/>
@@ -124,7 +125,7 @@
 				</div>	
 			</form>
 			
-			<form action="/create-checkout-session" class="form-detail" method="POST">
+			<!-- <form action="/create-checkout-session" class="form-detail" method="POST">
 				
 				<div class="form-row">
 					<h4>New user offer. Get 200 credits for <s>₹700</s> ₹400</h4>
@@ -132,7 +133,7 @@
 					<input hidden type="text" id="productId_ToStripe1" value="price_1MHSBlSEETzMR7U3K2EL1Jsn" name="product_Id" />
 					<input id="stripePayButton1" type="submit" value="Buy Credits" class="register">
 				</div>	
-			</form>
+			</form> -->
 
 			<div class="form-left">
 				<div class="form-left-last">
@@ -145,13 +146,11 @@
 							<label></label><a href="/PrivacyPolicy" target="_blank">Privacy Policy</a><br/>
 							<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
 							<br/><br/>
-							<label>KEEP IN MIND</label><br/>
-							<label>-Please check anything that TestEra generates thoroughly. Do not enter personal or sensitive information. TestEra is not liable for content displayed or generated.</label><br/>
-							
+							<a href="https://www.producthunt.com/posts/testera-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-testera&#0045;ai" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=372116&theme=neutral" alt="TestEra&#0032;AI - Write&#0032;Test&#0032;Cases&#0032;and&#0032;User&#0032;stories&#0032;with&#0032;AI | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>							
+							<br/>
 							<br/>
 							<a href="https://twitter.com/TestEra_Club" target="_blank">Follow us on Twitter</a>
-							<br/>
-							<label>Copyright &copy; TestEra.Club 2022<br/>Powered by OpenAI</label>
+							<!-- <label>Do not enter personal or sensitive information.</label><br/> -->
 						</div>
 				</div>
 

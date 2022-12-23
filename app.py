@@ -37,9 +37,13 @@ def PrivacyPolicy():
 def UsageGuidelinesguidelines():
     return render_template('UsageGuidelines.html')        
 
-@app.route('/AddCredits')
+@app.route('/Login')
 def AddCredits():
-    return render_template('AddCredits.html')        
+    return render_template('login.html')  
+
+@app.route('/Account')
+def AccountView():
+    return render_template('account.html')            
 
 
 @app.route('/')
@@ -55,20 +59,20 @@ def callPythonScriptPA():
     # print(temperature)
 
     if type== "testcases":
-        requirement = "Write 30 test cases for "+request.args.get('requirement')
+        requirement = "You are a software test manager at a company. Write 30 test cases for "+request.args.get('requirement')
     
     if type== "userstories":
         requirement = "Write 30 user stories for "+request.args.get('requirement')
    
     else:
-         requirement = "Write 30 test cases for "+request.args.get('requirement')
+         requirement = "Write 30 test cases for "+request.args.get('requirement') + " Do not repeat the phrases"
 
 
     outputTestCases = openai.Completion.create(
     model="text-davinci-003",
     prompt=requirement,
     temperature=temperature,
-    max_tokens=10,
+    max_tokens=1000,
     top_p=1,
     frequency_penalty=0.0,
     presence_penalty=0.0
@@ -104,6 +108,9 @@ if __name__ == '__main__':
 # See your keys here: https://dashboard.stripe.com/apikeys
 stripe.api_key = 'sk_test_51MGzagSEETzMR7U3gjZVFl0mRh2ukuClZwu3ORfKMi8YdjLkwIvM007YtPUpFqWb2sxYZPqnZy9p0aCiavWZ8RDh00ZTIfcSCq'
 
+# prod
+# stripe.api_key = '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'
+
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
@@ -112,6 +119,7 @@ def create_checkout_session():
     quantity = 1
     # domain_url = os.getenv('DOMAIN')
     domain_url = 'http://127.0.0.1:5000'
+    # domain_url = 'https://testera.club'
 
     try:
         checkout_session = stripe.checkout.Session.create(
@@ -144,6 +152,11 @@ def get_checkout_session():
 def webhook_received():
 
     webhook_secret = 'whsec_00691070098ba2d2ef5eef52ea01ab73134236f297f5ab3aa59833caf453b022'
+
+    # prod
+    # webhook_secret = 'whsec_DPLjrF2FZYJzednbzYyn4PNLmASMlvLw'
+
+
     request_data = json.loads(request.data)
 
     if webhook_secret:
@@ -189,12 +202,12 @@ def webhook_received():
 
         # get the user id of the email from db to add credits 
         userIdToUpdate = dict_values[0]['userId']
-        creditsPurchased = 0
-        if amount_total==20000:
-            creditsPurchased = 100
+        creditsPurchased = 100
+        # if amount_total==20000:
+        #     creditsPurchased = 100
 
-        if amount_total==40000:   
-            creditsPurchased = 200
+        # if amount_total==40000:   
+        #     creditsPurchased = 200
 
         
         creditstoadd = dict_values[0]['creditsRemaining'] + creditsPurchased

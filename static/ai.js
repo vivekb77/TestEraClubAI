@@ -36,11 +36,11 @@ function checkLogin() {
             document.getElementById("LogInButton").style.visibility = "visible";
             document.getElementById("loggedinemail").style.visibility = "hidden";
             document.getElementById("logoutButton").style.visibility = "hidden";
-            console.log("not user1");
+            // console.log("not user1");
             document.getElementById('submitRequirements_TestCases').disabled = false;
             document.getElementById('submitRequirements_UserStories').disabled = false;
             document.getElementById('stripePayButton').style.visibility = "hidden";
-            document.getElementById('stripePayButton1').style.visibility = "hidden";
+            // document.getElementById('stripePayButton1').style.visibility = "hidden";
             document.getElementById('validation1').innerText = "Login to add credits";
 
             document.getElementById('remainingCredits').innerText = "";
@@ -58,12 +58,12 @@ function checkLogin() {
                 document.getElementById("LogInButton").style.visibility = "visible";
                 document.getElementById("loggedinemail").style.visibility = "hidden";
                 document.getElementById("logoutButton").style.visibility = "hidden";
-                console.log("not user2");
+                // console.log("not user2");
                 document.getElementById('submitRequirements_TestCases').disabled = false;
                 document.getElementById('submitRequirements_UserStories').disabled = false;
 
                 document.getElementById('stripePayButton').style.visibility = "hidden";
-                document.getElementById('stripePayButton1').style.visibility = "hidden";
+                // document.getElementById('stripePayButton1').style.visibility = "hidden";
                 document.getElementById('validation1').innerText = "Login to add credits";
                 document.getElementById('remainingCredits').innerText = "";
                 document.getElementById('creditsLeft').innerText = "";
@@ -83,8 +83,8 @@ function checkLogin() {
                 document.getElementById('stripePayButton').style.visibility = "visible";
                 document.getElementById('customer_email_ToStripe').value=user_Email;
 
-                document.getElementById('stripePayButton1').style.visibility = "visible";
-                document.getElementById('customer_email_ToStripe1').value=user_Email;
+                // document.getElementById('stripePayButton1').style.visibility = "visible";
+                // document.getElementById('customer_email_ToStripe1').value=user_Email;
 
                 isUserNew();
 
@@ -99,33 +99,8 @@ function checkLogin() {
 
 function logIn() {
 
-    var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
+    location.replace('/Login');
 
-    firebase.auth()
-        .getRedirectResult()
-        .then((result) => {
-            if (result.credential) {
-                /** @type {firebase.auth.OAuthCredential} */
-                analytics.logEvent('Login successful', { name: '' });
-
-
-            }
-
-            analytics.logEvent('Login attempted', { name: '' });
-
-
-        }).catch((error) => {
-            // Handle Errors here.
-            var errorCode = error.code;
-
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-            // ...
-        });
 
 }
 
@@ -133,13 +108,18 @@ function logIn() {
 
 function logOut() {
 
-    firebase.auth().signOut()
-    userId = null // have to do or user id logic on page works as if user was logged even when logged out
+    firebase.auth().signOut().then(() => {
+        // Sign-out successful.
+        userId = null // have to do or user id logic on page works as if user was logged even when logged out
 
-    document.getElementById("LogInButton").style.visibility = "visible";
-    document.getElementById("loggedinemail").style.visibility = "hidden";
-    document.getElementById("logoutButton").style.visibility = "hidden";
+        document.getElementById("LogInButton").style.visibility = "visible";
+        document.getElementById("loggedinemail").style.visibility = "hidden";
+        document.getElementById("logoutButton").style.visibility = "hidden";
 
+      }).catch((error) => {
+        // An error happened.
+      });
+    
 }
 
 // login end
@@ -186,7 +166,8 @@ function gatherTestCasesDataToSend() {
             document.getElementById('copyButton').disabled = true;
             document.getElementById("shareButton").disabled = true;
             document.getElementById("clearBox").disabled = true;
-            
+            document.getElementById("logoutButton").disabled = true;
+
             document.getElementById('validation').innerText = "";
 
             var showProgress = document.getElementById('outputAnswerToDisplay');
@@ -207,7 +188,7 @@ function gatherTestCasesDataToSend() {
             var complexityelement = document.getElementById("complexityrange");
             var complexity1 = complexityelement.value;
             complexity = complexity1 / 10;
-            console.log("complexity= " + complexity);
+            // console.log("complexity= " + complexity);
 
             TestorStoriesType = "testcases"
             //first moderate query send requirements to python and get the AI generated result
@@ -258,6 +239,7 @@ function gatherUserStoriesDataToSend() {
             document.getElementById('copyButton').disabled = true;
             document.getElementById("shareButton").disabled = true;
             document.getElementById("clearBox").disabled = true;
+            document.getElementById("logoutButton").disabled = true;
             document.getElementById('validation').innerText = "";
 
             var showProgress = document.getElementById('outputAnswerToDisplay');
@@ -416,6 +398,7 @@ function displayOutput(responsefromAI) {
     document.getElementById("copyButton").disabled = false;
     document.getElementById("shareButton").disabled = false;
     document.getElementById("clearBox").disabled = false;
+    document.getElementById("logoutButton").disabled = false;
 
     // for adding to DB
     output = cleanData;
@@ -456,6 +439,7 @@ function clearAll() {
     document.getElementById('copyButton').disabled = true;
     document.getElementById('shareButton').value = "Share this";
     document.getElementById('shareButton').disabled = true;
+    document.getElementById("logoutButton").disabled = false;
 
     //update the title and url and title to just domain
     // pushState () -- 3 parameters, 1) state object 2) title and a URL)
@@ -807,13 +791,13 @@ function isUserNew() {
             var a = snapshot.exists();  // true if user exists
 
             if (a == true) {
-                console.log("user is not new")
+                // console.log("user is not new")
 
                 getRemainingCredits();
 
             }
             if (a == false) {
-                console.log("user is new")
+                // console.log("user is new")
                 createMyCreditsUser();
             }
         });
@@ -941,7 +925,7 @@ if (sessionId) {
     })
     .then(function (session) {
         if(session.payment_status == "paid" && session.status == "complete"){
-            document.getElementById('paymentStatusLabel').innerText ="Payment was successful, Credits are added to your account. If Credits are not added, refresh the page in a few seconds.";
+            document.getElementById('paymentStatusLabel').innerText ="Payment was successful, Credits are added to your account. If Credits are not added, refresh the page in a few seconds or contact us using the Contact us link.";
         }
         else{
             document.getElementById('paymentStatusLabel').innerText ="Something went wrong with the payment. If your payment was successful and credits are not added to your account, please contact us.";
