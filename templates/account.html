@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TestEra.Club Account</title>
+        <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+        <!-- Mobile Specific Metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"/>
+
+        <link rel="stylesheet" type="text/css" href="static/style.css"/>
+    
+        
+        <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" defer></script>
+            
+    </head>
+  
+    <body class="form-v4">
+      
+        	<!-- //second row start -->
+<div class="page-content">
+    <div class="form-v4-content">
+
+        <form class="form-detail">
+            
+            <div class="form-row">
+                <input id="GoHome" type="button" value="Home" class="register" onclick="goHome()">
+                <h2>TESTERA  - MY ACCOUNT</h2>
+                <h5>1 credit = 1 query run</h5>
+                <h2 id="creditsLeft"></h2>
+                
+                <label style="color: rgb(25, 0, 255)" id="paymentStatusLabel"></label>
+               
+                <!-- <h2>Add more Credits</h2> -->
+                <h4>Improve the efficiency of your team. <h4><b>Team leaders and managers</b>, Share credits with POs, BAs, Devs, and Testers to generate test cases with the 1000 Credits Business plan below.</h4>
+               
+            </div>	
+        </form>
+        
+
+        <div class="form-left">
+            <div class="form-left-last">
+                
+                <h6>Logged in as </h6> <label id="loggedinemail"></label><br/>
+                   
+                  
+                    <div class="form-row-last">
+                        <h2>Share your credits with your team</h2>
+
+                        <input type="text" class="form__input" id="emailToSendCredits" placeholder="Email to send Credits?" maxlength="50" required="" />
+                       <br/>
+                        <input type="text" class="form__input" id="creditsToSend" placeholder="How many Credits?" maxlength="2" required="" />
+                        <br/>
+                        <label style="color: red" id="validation"></label>
+                        <label style="color: rgb(0, 255, 4)" id="success"></label>
+                        <input id="sendCredits" type="button" class="account" value="Send Credits" onclick="getEmailToSendCredits()">
+                        
+                    </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- //secon row end -->
+
+    <div>        
+        <section class="pricing py-5">
+            <div class="container">
+              <div class="row">
+                <!-- Free Tier -->
+        
+                <div class="col-lg-4">
+                  <div class="card mb-5 mb-lg-0">
+                    <div class="card-body">
+                      <h5 class="card-title text-muted text-uppercase text-center">100 Credits</h5>
+                      <h6 class="card-price text-center">₹300<span class="period"> for 100 Credits</span></h6>
+                      <hr>
+                      <ul class="fa-ul">
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span>Single User</li>
+                        <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Can't share Credits with others</li>
+                      </ul>
+                       <form action="/create-checkout-session" method="POST">
+                            <div class="d-grid">
+                                <input hidden type="text" id="customer_email_ToStripe1" value="" name="customer_email" />
+                                <input hidden type="text" id="productId_ToStripe" value="price_1MIQ1fSEETzMR7U3x4bSqnNa" name="product_Id" />
+                                <!-- <input hidden type="text" id="productId_ToStripe" value="price_1MIQ2ESEETzMR7U3jp56lWCI" name="product_Id" /> -->
+                                <input id="stripePayButton" type="submit" value="Buy Credits" class="btn btn-primary text-uppercase">
+
+                            </div>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+       
+                <!-- Plus Tier -->
+              
+                    <div class="col-lg-4">
+                      <div class="card mb-5 mb-lg-0">
+                        <div class="card-body">
+                          <h5 class="card-title text-muted text-uppercase text-center">210 Credits</h5>
+                          <h6 class="card-price text-center">₹600<span class="period"> for 210 Credits</span></h6>
+                          <hr>
+                          <ul class="fa-ul">
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Single User</li>
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Share Credits with others</li>
+                          </ul>
+                        <form action="/create-checkout-session" method="POST">
+                            <div class="d-grid">
+                                <input hidden type="text" id="customer_email_ToStripe2" value="" name="customer_email" />
+                                <input hidden type="text" id="productId_ToStripe" value="price_1MIQ2sSEETzMR7U3WcC82YzH" name="product_Id" />
+                                <!-- <input hidden type="text" id="productId_ToStripe" value="price_1MIQ2ySEETzMR7U3uGd8wIqd" name="product_Id" /> -->
+                                <input id="stripePayButton" type="submit" value="Buy Credits" class="btn btn-primary text-uppercase">
+                            </div>
+                        </form>
+                        </div>
+                      </div>
+                    </div>
+            
+                <!-- Pro Tier -->
+               
+                    <div class="col-lg-4">
+                      <div class="card mb-5 mb-lg-0">
+                        <div class="card-body">
+                          <h5 class="card-title text-muted text-uppercase text-center">1000 Credits</h5>
+                          <h6 class="card-price text-center">₹3000<span class="period"> for 1000 Credits</span></h6>
+                          <hr>
+                          <ul class="fa-ul">
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Business</li>
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Share Credits with your team</li>
+                          </ul>
+                        <form action="/create-checkout-session" method="POST">
+                          <div class="d-grid">
+                            <input hidden type="text" id="customer_email_ToStripe3" value="" name="customer_email" />
+                            <input hidden type="text" id="productId_ToStripe" value="price_1MIQ43SEETzMR7U3kzWQnftO" name="product_Id" />
+                            <!-- <input hidden type="text" id="productId_ToStripe" value="price_1MIQ4FSEETzMR7U3OWPgQRLF" name="product_Id" /> -->
+                            <input id="stripePayButton" type="submit" value="Buy Credits" class="btn btn-primary text-uppercase">
+    
+                          </div>
+                        </form>
+                        </div>
+                      </div>
+                    </div>
+            
+            </div>
+          </section>
+    </div>      
+     <!-- firebase -->
+     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-analytics.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
+    
+     <script src="static/firebase.js"></script>
+    
+    <script src="static/account.js"></script>
+    
+    
+    
+    </body>
+
+
+
+ 

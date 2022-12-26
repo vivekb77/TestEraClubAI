@@ -1,3 +1,4 @@
+
 var elem = document.querySelector('input[type="range"]');
 
 var rangeValue = function () {
@@ -8,11 +9,41 @@ var rangeValue = function () {
 
 elem.addEventListener("input", rangeValue);
 
+getDropDownListValue()
+function getDropDownListValue(){
+    var optionMenu = document.querySelector(".select-menu"),
+    selectBtn = optionMenu.querySelector(".select-btn"),
+    options = optionMenu.querySelectorAll(".option"),
+    
+    sBtn_text = optionMenu.querySelector(".sBtn-text");
+
+  
+  selectBtn.addEventListener("click", () =>
+    optionMenu.classList.toggle("active")
+  );
+  
+  options.forEach((option) => {
+    option.addEventListener("click", () => {
+      let selectedOption = option.querySelector(".option-text").innerText;
+      sBtn_text.innerText = selectedOption;
+      
+
+      let selectedOption1 = option.querySelector(".option-text").value;
+      
+      sBtn_text.value = selectedOption1;
+
+      optionMenu.classList.remove("active");
+      
+  
+    });
+  });
+}
 
 
 //login start
 var userId = null;
 var user_Email;
+var selectedOptionForTestCases=null;
 
 //to do on page load start
 analytics.logEvent('TestEra Virtual Assistant page visited', { name: '' });
@@ -20,7 +51,7 @@ analytics.logEvent('TestEra Virtual Assistant page visited', { name: '' });
 
 //disable now, enable them when credits are fetched
 document.getElementById('submitRequirements_TestCases').disabled = true;
-document.getElementById('submitRequirements_UserStories').disabled = true;
+
  //enable the copy button
  document.getElementById("copyButton").disabled = true;
  document.getElementById("shareButton").disabled = true;
@@ -38,10 +69,11 @@ function checkLogin() {
             document.getElementById("logoutButton").style.visibility = "hidden";
             // console.log("not user1");
             document.getElementById('submitRequirements_TestCases').disabled = false;
-            document.getElementById('submitRequirements_UserStories').disabled = false;
-            document.getElementById('stripePayButton').style.visibility = "hidden";
-            // document.getElementById('stripePayButton1').style.visibility = "hidden";
-            document.getElementById('validation1').innerText = "Login to add credits";
+
+            document.getElementById('goToAccount').style.visibility = "hidden";
+            document.getElementById('goToAccount1').style.visibility = "hidden";
+
+            document.getElementById('validation1').innerText = "Sign In to add / manage credits";
 
             document.getElementById('remainingCredits').innerText = "";
             document.getElementById('creditsLeft').innerText = "";
@@ -60,11 +92,12 @@ function checkLogin() {
                 document.getElementById("logoutButton").style.visibility = "hidden";
                 // console.log("not user2");
                 document.getElementById('submitRequirements_TestCases').disabled = false;
-                document.getElementById('submitRequirements_UserStories').disabled = false;
 
-                document.getElementById('stripePayButton').style.visibility = "hidden";
-                // document.getElementById('stripePayButton1').style.visibility = "hidden";
-                document.getElementById('validation1').innerText = "Login to add credits";
+
+                document.getElementById('goToAccount').style.visibility = "hidden";
+                document.getElementById('goToAccount1').style.visibility = "hidden";
+
+                document.getElementById('validation1').innerText = "Login to add / manage credits";
                 document.getElementById('remainingCredits').innerText = "";
                 document.getElementById('creditsLeft').innerText = "";
 
@@ -80,11 +113,9 @@ function checkLogin() {
                 userId = user.uid;
                 user_Email=user.email
 
-                document.getElementById('stripePayButton').style.visibility = "visible";
-                document.getElementById('customer_email_ToStripe').value=user_Email;
+                document.getElementById('goToAccount').style.visibility = "visible";
+                document.getElementById('goToAccount1').style.visibility = "visible";
 
-                // document.getElementById('stripePayButton1').style.visibility = "visible";
-                // document.getElementById('customer_email_ToStripe1').value=user_Email;
 
                 isUserNew();
 
@@ -125,39 +156,51 @@ function logOut() {
 // login end
 
 var requirements
-var TestorStoriesType
+var topOutputHeading
 var complexity;
 var creditsRemaining = 0;
+
 
 //called on test cases button click
 function gatherTestCasesDataToSend() {
 
+   
 
     //only logged in users can query
     if (userId == null) {
-        document.getElementById('validation').innerText = "Login with Google (takes just ~10 secs) to Generate Test Cases";
+        document.getElementById('validation').innerText = "Sign In (takes just ~10 secs) to Generate Test Cases";
         analytics.logEvent('TestEra tried asking without login', { name: '' });
+        
     }
 
     //only logged in users can query
     if (userId !== null) {
 
         if (creditsRemaining <= 0) {
-            document.getElementById('validation').innerText = "It costs a lot of $$ to process this queries. As a free user, you've used all of your 10 free credits. If you want to save time, effort and improve the quality of your test cases, add more credits to your account by clicking 'Add Credits' button below.";
+            document.getElementById('validation').innerText = "It costs a lot of $$ to process this queries. You've used all of your 10 free credits. If you want to save time, effort and improve the quality of your test cases, add more credits to your account by clicking 'Add Credits' button below.";
             analytics.logEvent('TestEra user used till limit', { name: '' });
             rpT7Y6a8WRF();
         }
 
         if (creditsRemaining > 0) {
 
+
             //validate if field is not empty. //this is the input sent to AI
             var queryByUser = document.getElementById('user_requirement').value.trim();
+            dropDownSelectedValue = document.querySelector(".sBtn-text");
+            selectedOptionForTestCases = dropDownSelectedValue.value;
+
 
             if (queryByUser == null || queryByUser == "") {
-                document.getElementById('validation').innerText = "Enter something";
+                document.getElementById('validation').innerText = "Enter requirement to generate Test Cases";
                 return false;
-            } if (queryByUser.length > 500) {
+            } 
+            if (queryByUser.length > 500) {
                 document.getElementById('validation').innerText = "Too long, 500 chars max";
+                return false;
+            }
+            if (selectedOptionForTestCases == null || selectedOptionForTestCases == "") {
+                document.getElementById('validation').innerText = "Select an option for what type of Test Cases needs to be generated.";
                 return false;
             }
 
@@ -173,11 +216,11 @@ function gatherTestCasesDataToSend() {
             var showProgress = document.getElementById('outputAnswerToDisplay');
             showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
 
-            document.getElementById('submitRequirements_UserStories').disabled = true;
+
             document.getElementById('submitRequirements_TestCases').value = "Thinking...";
             document.getElementById('submitRequirements_TestCases').disabled = true;
 
-            document.getElementById('TestorStoriesType').innerText = "Test Cases"
+            document.getElementById('topOutputHeading').innerText = "OUTPUT"
             document.getElementById('copyButton').value = "Copy Test Cases";
 
             // for adding to DB
@@ -190,10 +233,10 @@ function gatherTestCasesDataToSend() {
             complexity = complexity1 / 10;
             // console.log("complexity= " + complexity);
 
-            TestorStoriesType = "testcases"
+
             //first moderate query send requirements to python and get the AI generated result
 
-            moderateContent(queryByUser, TestorStoriesType, complexity);
+            moderateContent(queryByUser, selectedOptionForTestCases, complexity);
 
             //log event
             TestCasesButtonClicked();
@@ -202,73 +245,6 @@ function gatherTestCasesDataToSend() {
 
 }
 
-//called on user stories button click
-function gatherUserStoriesDataToSend() {
-
-    //only logged in users can query
-    if (userId == null) {
-        document.getElementById('validation').innerText = "Login with Google (takes just ~10 secs) to Generate User Stories";
-        analytics.logEvent('TestEra tried asking without login', { name: '' });
-    }
-
-    //only logged in users can query
-    if (userId !== null) {
-
-        if (creditsRemaining <= 0) {
-            document.getElementById('validation').innerText = "It costs a lot of $$ to process this queries. As a free user, you've used all of your 10 free credits. If you want to save time, effort and improve the quality of your test cases, add more credits to your account by clicking 'Add Credits' button below.";
-            analytics.logEvent('TestEra user used till limit', { name: '' });
-            rpT7Y6a8WRF();
-        }
-
-        if (creditsRemaining > 0) {
-
-            //validate if field is not empty. //this is the input sent to AI
-            var queryByUser = document.getElementById('user_requirement').value.trim();
-
-            if (queryByUser == null || queryByUser == "") {
-                document.getElementById('validation').innerText = "Enter something";
-                return false;
-            } if (queryByUser.length > 500) {
-                document.getElementById('validation').innerText = "Too long, 500 chars max";
-                return false;
-            }
-
-
-            document.getElementById("loader").removeAttribute("hidden");
-            document.getElementById('shareButton').value = "Share this";
-            document.getElementById('copyButton').disabled = true;
-            document.getElementById("shareButton").disabled = true;
-            document.getElementById("clearBox").disabled = true;
-            document.getElementById("logoutButton").disabled = true;
-            document.getElementById('validation').innerText = "";
-
-            var showProgress = document.getElementById('outputAnswerToDisplay');
-            showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
-
-            document.getElementById('submitRequirements_UserStories').value = "Thinking...";
-            document.getElementById('submitRequirements_UserStories').disabled = true;
-            document.getElementById('TestorStoriesType').innerText = "User Stories"
-            document.getElementById('submitRequirements_TestCases').disabled = true;
-            document.getElementById('copyButton').value = "Copy User Stories";
-
-            // for adding to DB
-            input = queryByUser.trim();
-
-            var complexityelement = document.getElementById("complexityrange");
-            var complexity1 = complexityelement.value;
-            complexity = complexity1 / 10;
-
-
-            TestorStoriesType = "userstories";
-            //first moderate query send requirements to python and get the AI generated result
-            moderateContent(queryByUser, TestorStoriesType, complexity);
-
-            //log event
-            UserStoriesButtonClicked();
-
-        }
-    }
-}
 
 function TestCasesButtonClicked() {
 
@@ -276,16 +252,10 @@ function TestCasesButtonClicked() {
 
 }
 
-function UserStoriesButtonClicked() {
-
-    analytics.logEvent('Generate User stories Button clicked', { name: '' });
-
-}
-
 
 //moderate user query and warn of content violates policies
 var isQueryContentBad;
-function moderateContent(queryByUser, TestorStoriesType, complexity) {
+function moderateContent(queryByUser, selectedOptionForTestCases, complexity) {
 
     let querysentToAI = queryByUser.trim();
 
@@ -307,26 +277,18 @@ function moderateContent(queryByUser, TestorStoriesType, complexity) {
             document.getElementById('validation').innerText = "This Query violates our content policies, no output is displayed.";
             document.getElementById('outputAnswerToDisplay').innerText = "This Query violates our content policies, no output is displayed.";
 
-            document.getElementById('TestorStoriesType').innerText = "Bad request";
-            document.getElementById('submitRequirements_TestCases').value = "Test Cases";
+            document.getElementById('topOutputHeading').innerText = "Bad request";
+            document.getElementById('submitRequirements_TestCases').value = "Generate";
             document.getElementById('submitRequirements_TestCases').disabled = false;
 
-            document.getElementById('submitRequirements_UserStories').value = "User Stories";
-            document.getElementById('submitRequirements_UserStories').disabled = false;
 
             beYwbUH4XJ2F6bPYUefH();
 
         }
 
         if (isQueryContentBad == "false") {
-            if (TestorStoriesType == "testcases") {
-                askAI(queryByUser, TestorStoriesType, complexity);
-
-            }
-            if (TestorStoriesType == "userstories") {
-                askAI(queryByUser, TestorStoriesType, complexity);
-
-            }
+           
+                askAI(queryByUser, selectedOptionForTestCases, complexity);
 
         }
 
@@ -340,7 +302,7 @@ function moderateContent(queryByUser, TestorStoriesType, complexity) {
 
 // get the response generated by AI
 var responsefromAI;
-function askAI(queryByUser, type, complexity) {
+function askAI(queryByUser, selectedOptionForTestCases, complexity) {
 
     let querysentToAI = queryByUser;
 
@@ -348,13 +310,19 @@ function askAI(queryByUser, type, complexity) {
     //send the info requirement as query string
 
     const request = new XMLHttpRequest();
-    request.open("POST", '/askAI?requirement=' + querysentToAI + "&type=" + type + "&complexity=" + complexity, true);
+    request.open("POST", '/askAI?requirement=' + querysentToAI + "&type=" + selectedOptionForTestCases + "&complexity=" + complexity, true);
 
     request.onload = () => {
-
-        responsefromAI = request.responseText //response from AI 
-
+ 
+       responsefromAI = request.responseText //response from AI 
+       
+        if(request.status ==200){
         displayOutput(responsefromAI);   //display the resonse on UI
+        }
+        else{
+            document.getElementById('validation').innerText = "Some error occurred, please refresh the page and try again";
+            document.getElementById('outputAnswerToDisplay').innerText = "Some error occurred, please refresh the page and try again";
+        }
     }
 
     request.send();
@@ -366,18 +334,8 @@ function askAI(queryByUser, type, complexity) {
 // display answer on UI
 function displayOutput(responsefromAI) {
 
-    document.getElementById('submitRequirements_TestCases').value = "Test Cases";
+    document.getElementById('submitRequirements_TestCases').value = "Generate";
 
-    document.getElementById('submitRequirements_UserStories').value = "User Stories";
-
-    //set the title of answer based on what the query was
-
-    if (TestorStoriesType == "testcases") {
-        document.getElementById('TestorStoriesType').innerText = "Test Cases";
-    }
-    if (TestorStoriesType == "userstories") {
-        document.getElementById('TestorStoriesType').innerText = "User Stories";
-    }
 
     // convert data into JSON object
     var parsedData = JSON.parse(responsefromAI);
@@ -389,10 +347,46 @@ function displayOutput(responsefromAI) {
 
     document.getElementById("loader").setAttribute("hidden", "");
 
-    //display the result on the label
     const outputLabel = document.getElementById('outputAnswerToDisplay');
     outputLabel.innerText = "Complexity = " + complexity * 10 + "\n\n" + cleanData.slice(0, 5000);
+    
+    document.getElementById('selectedOption').disabled = false;
+     //set the title of answer based on what the query was
 
+    if (selectedOptionForTestCases == "FTC") {
+        document.getElementById('topOutputHeading').innerText = "Functional Test Cases";
+    }
+    if (selectedOptionForTestCases == "ETC") {
+        document.getElementById('topOutputHeading').innerText = "Edge Test Cases";
+    }
+    if (selectedOptionForTestCases == "NTC") {
+        document.getElementById('topOutputHeading').innerText = "Negative Test Cases";
+    }
+    if (selectedOptionForTestCases == "UFTC") {
+        document.getElementById('topOutputHeading').innerText = "User flow Test Cases";
+    }
+    if (selectedOptionForTestCases == "PTC") {
+        document.getElementById('topOutputHeading').innerText = "Performance Test Cases";
+    }
+    if (selectedOptionForTestCases == "STC") {
+        document.getElementById('topOutputHeading').innerText = "Security Test Cases";
+    }
+    if (selectedOptionForTestCases == "UIUCTC") {
+        document.getElementById('topOutputHeading').innerText = "UI and UX Test Cases";
+    }
+    if (selectedOptionForTestCases == "MCUI") {
+        document.getElementById('topOutputHeading').innerText = "Most common user inputs";
+    }
+    if (selectedOptionForTestCases == "SBREAK") {
+        document.getElementById('topOutputHeading').innerText = "Scenarios where this feature might break";
+    }
+    if (selectedOptionForTestCases == "UNEXPECTED") {
+        document.getElementById('topOutputHeading').innerText = "What are some unexpected ways that users might use this feature?";
+    }
+    if (selectedOptionForTestCases == "BUG") {
+        document.getElementById('topOutputHeading').innerText = "Create a bug report for a defect";
+    }
+    
 
     //enable the copy button
     document.getElementById("copyButton").disabled = false;
@@ -416,13 +410,14 @@ function displayOutput(responsefromAI) {
 
 function clearAll() {
 
-    document.getElementById('submitRequirements_TestCases').value = "Test Cases";
+    
+
+    document.getElementById('submitRequirements_TestCases').value = "Generate";
     document.getElementById('submitRequirements_TestCases').disabled = false;
+    document.getElementById('selectedOption').disabled = false;
 
-    document.getElementById('submitRequirements_UserStories').value = "User Stories";
-    document.getElementById('submitRequirements_UserStories').disabled = false;
 
-    document.getElementById('TestorStoriesType').innerText = "Output";
+    document.getElementById('topOutputHeading').innerText = "Output";
 
     var textAreaplaceholeder = ""
     var textAreaplaceholederText1 = document.getElementById('user_requirement');
@@ -432,7 +427,7 @@ function clearAll() {
 
 
     var placeholderTextLabel = document.getElementById('outputAnswerToDisplay');
-    placeholderTextLabel.innerText = "Your AI generated output will appear here.\n\n TestEra.Club is your virtual testing assistant that can:\n- Generate test cases\n- Generate user stories\n\nAsk your requirements multiple times with different wording and then put everything together."
+    placeholderTextLabel.innerText = "Your AI generated output will appear here.\n\n TestEra.Club is your virtual testing assistant that can:\n- Generate test cases\n\nAsk your requirements multiple times with different wording and then put everything together."
 
 
     document.getElementById('copyButton').value = "Copy Output";
@@ -453,12 +448,40 @@ function clearAll() {
 
 function copyOutput() {
 
-    if (TestorStoriesType == "testcases") {
-       type1 = "Test Cases";
+    if (selectedOptionForTestCases == "FTC") {
+        type1 = "Functional Test Cases";
     }
-    if (TestorStoriesType == "userstories") {
-        type1 = "User Stories";
+    if (selectedOptionForTestCases == "ETC") {
+        type1 = "Edge Test Cases";
     }
+    if (selectedOptionForTestCases == "NTC") {
+        type1 = "Negative Test Cases";
+    }
+    if (selectedOptionForTestCases == "UFTC") {
+        type1 = "User flow Test Cases";
+    }
+    if (selectedOptionForTestCases == "PTC") {
+        type1 = "Performance Test Cases";
+    }
+    if (selectedOptionForTestCases == "STC") {
+        type1 = "Security Test Cases";
+    }
+    if (selectedOptionForTestCases == "UIUCTC") {
+        type1 = "UI and UX Test Cases";
+    }
+    if (selectedOptionForTestCases == "MCUI") {
+        type1 = "Most common user inputs";
+    }
+    if (selectedOptionForTestCases == "SBREAK") {
+        type1 = "Scenarios where this feature might break";
+    }
+    if (selectedOptionForTestCases == "UNEXPECTED") {
+        type1 = "What are some unexpected ways that users might use this feature?";
+    }
+    if (selectedOptionForTestCases == "BUG") {
+        type1 = "Create a bug report for a defect";
+    }
+
 
     //  var  outputAnswerToDisplay = document.getElementById('outputAnswerToDisplay');
     let textToCopy = "Query for "+type1 + "\n" + "Query - " + input + "\n" + "Complexity - " + complexity * 10 + "\nOutput - " + output;
@@ -494,7 +517,7 @@ function addDataToDB() {
         totaltokensused: totaltokensused,
         querytokensused: querytokensused,
         answertokensused: answertokensused,
-        TestorStoriesType: TestorStoriesType,
+        selectedOptionForTestCases: selectedOptionForTestCases,
         complexity: complexity,
         createdDate: firebase.database.ServerValue.TIMESTAMP,
 
@@ -517,7 +540,7 @@ function updateURLandTitle() {
     //update the title and url q string each time new query is done
     // pushState () -- 3 parameters, 1) state object 2) title and a URL)
     window.history.pushState('', "", '?id=' + firebasePrimaryId);
-    // document.title = "TestEra.Club - "+input;
+    document.title = "TestEra.Club - "+input;
 
 }
 
@@ -613,14 +636,14 @@ function getDataOfSharedQuestion() {
                     input = CurrentRecord.val().input;
                     output = CurrentRecord.val().output;
                     complexity = CurrentRecord.val().complexity;
-                    TestorStoriesType = CurrentRecord.val().TestorStoriesType;
+                    selectedOptionForTestCases = CurrentRecord.val().selectedOptionForTestCases;
                    
                     var sharedQueryObj =
                     {
                         "input": input,
                         "output": output,
                         "complexity": complexity,
-                        "TestorStoriesType": TestorStoriesType,
+                        "selectedOptionForTestCases": selectedOptionForTestCases,
                     };
                     sharedQueryArray.push(sharedQueryObj)
                    
@@ -630,7 +653,7 @@ function getDataOfSharedQuestion() {
 
             if (sharedQueryArray.length == 0)
             {
-                document.getElementById('validation').innerText = "The test cases / user stories you are looking for are not found. Please check the URL. Click clear button and search a new query.";
+                document.getElementById('validation').innerText = "The test cases you are looking for are not found. Please check the URL. Click clear button and search a new query.";
             }
 
             document.getElementById("loader").setAttribute("hidden", "");
@@ -644,14 +667,41 @@ function getDataOfSharedQuestion() {
                 var textAreaplaceholederText1 = document.getElementById('user_requirement');
                 textAreaplaceholederText1.value = sharedQueryArray[0].input.trim();     
 
-                if (sharedQueryArray[0].TestorStoriesType == "testcases") {
-                    document.getElementById('TestorStoriesType').innerText = "Test cases";
-                    document.getElementById('copyButton').value = "Copy Test Cases";
+
+                if (sharedQueryArray[0].selectedOptionForTestCases == "FTC") {
+                    document.getElementById('topOutputHeading').innerText = "Functional Test Cases";
                 }
-                if (sharedQueryArray[0].TestorStoriesType == "userstories") {
-                    document.getElementById('TestorStoriesType').innerText = "User Stories";
-                    document.getElementById('copyButton').value = "Copy User Stories";
+                if (sharedQueryArray[0].selectedOptionForTestCases == "ETC") {
+                    document.getElementById('topOutputHeading').innerText = "Edge Test Cases";
                 }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "NTC") {
+                    document.getElementById('topOutputHeading').innerText = "Negative Test Cases";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "UFTC") {
+                    document.getElementById('topOutputHeading').innerText = "User flow Test Cases";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "PTC") {
+                    document.getElementById('topOutputHeading').innerText = "Performance Test Cases";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "STC") {
+                    document.getElementById('topOutputHeading').innerText = "Security Test Cases";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "UIUCTC") {
+                    document.getElementById('topOutputHeading').innerText = "UI and UX Test Cases";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "MCUI") {
+                    document.getElementById('topOutputHeading').innerText = "Most common user inputs";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "SBREAK") {
+                    document.getElementById('topOutputHeading').innerText = "Scenarios where this feature might break";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "UNEXPECTED") {
+                    document.getElementById('topOutputHeading').innerText = "What are some unexpected ways that users might use this feature?";
+                }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "BUG") {
+                    document.getElementById('topOutputHeading').innerText = "Create a bug report for a defect";
+                }
+            
 
                 //update the page title
                 // document.title = "TestEra.Club - "+input;
@@ -660,7 +710,7 @@ function getDataOfSharedQuestion() {
 
                 document.getElementById('copyButton').disabled = false;
             }
-            analytics.logEvent('Shared TestCases/UserStories viewed', { name: '' });
+            analytics.logEvent('Shared TestCases viewed', { name: '' });
 
         });
 
@@ -878,7 +928,7 @@ function debitACreditLog() {
         userId: userId,
         creditsDebited: 1,
         creditsCredited: 0,
-        creditMessage: "Query for " + TestorStoriesType,
+        creditMessage: "Query for " + topOutputHeading,
         createdDate: firebase.database.ServerValue.TIMESTAMP,
 
     })
@@ -910,31 +960,11 @@ function getRemainingCredits() {
 
 
     document.getElementById('submitRequirements_TestCases').disabled = false;
-    document.getElementById('submitRequirements_UserStories').disabled = false;
+
 
 }
 
-
-var urlParams = new URLSearchParams(window.location.search);
-var sessionId = urlParams.get('session_id');
-
-if (sessionId) {
-  fetch('/checkout-session?sessionId=' + sessionId)
-    .then(function (result) {
-      return result.json();
-    })
-    .then(function (session) {
-        if(session.payment_status == "paid" && session.status == "complete"){
-            document.getElementById('paymentStatusLabel').innerText ="Payment was successful, Credits are added to your account. If Credits are not added, refresh the page in a few seconds or contact us using the Contact us link.";
-        }
-        else{
-            document.getElementById('paymentStatusLabel').innerText ="Something went wrong with the payment. If your payment was successful and credits are not added to your account, please contact us.";
-            
-        }
-     
-
-    })
-    .catch(function (err) {
-      console.log('Error when fetching Checkout session', err);
-    });
+function AddCredits(){
+    location.replace('/Account');
 }
+

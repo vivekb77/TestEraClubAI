@@ -297,7 +297,7 @@ body {
 	background: #2f73a3;
 }
 .form-v4-content .form-detail .register1 {
-	background: #e05109;
+	background: #ec0a0a;
 	border-top-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	border-top-right-radius: 5px;
@@ -355,7 +355,7 @@ body {
 
 textarea {
 	width: 100%;
-	height: 150px;
+	height: 180px;
 	padding: 12px 20px;
 	box-sizing: border-box;
 	border: 2px solid #ccc;
@@ -488,3 +488,197 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* slide container end*/
 
+/* pricing css start */
+
+
+section.pricing {
+	background: #ffffff;
+	background: linear-gradient(to right, #ffffff, #fbfbfb);
+  }
+  
+  .pricing .card {
+	border: none;
+	border-radius: 1rem;
+	transition: all 0.2s;
+	box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .pricing hr {
+	margin: 1.5rem 0;
+  }
+  
+  .pricing .card-title {
+	margin: 0.5rem 0;
+	font-size: 0.9rem;
+	letter-spacing: .1rem;
+	font-weight: bold;
+  }
+  
+  .pricing .card-price {
+	font-size: 3rem;
+	margin: 0;
+  }
+  
+  .pricing .card-price .period {
+	font-size: 0.8rem;
+  }
+  
+  .pricing ul li {
+	margin-bottom: 1rem;
+  }
+  
+  .pricing .text-muted {
+	opacity: 0.7;
+  }
+  
+  .pricing .btn {
+	font-size: 80%;
+	border-radius: 5rem;
+	letter-spacing: .1rem;
+	font-weight: bold;
+	padding: 1rem;
+	opacity: 100;
+	transition: all 0.2s;
+	background: #3786bd;
+  }
+  
+  /* Hover Effects on Card */
+  
+  @media (min-width: 992px) {
+	.pricing .card:hover {
+	  margin-top: -.25rem;
+	  margin-bottom: .25rem;
+	  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.3);
+	}
+  
+	.pricing .card:hover .btn {
+	  opacity: 1;
+	}
+  }
+
+  
+  /* pricing css end */
+
+/* text box on account page start */
+  
+  .form__input {
+	font-family: 'Roboto', sans-serif;
+	color: #333;
+	font-size: 1.2rem;
+	  margin: 0 auto;
+	padding: 1.5rem 2rem;
+	border-radius: 0.2rem;
+	background-color: rgb(255, 255, 255);
+	border: none;
+	width: 100%;
+	display: block;
+	border-bottom: 0.3rem solid transparent;
+	transition: all 0.3s;
+  }
+  
+  .form__input:placeholder-shown + .form__label {
+	opacity: 0;
+	visibility: hidden;
+	-webkit-transform: translateY(-4rem);
+	transform: translateY(-4rem);
+  }
+  
+  /* text box on account page end */
+
+
+    /* select list on account page end */
+  .select-menu {
+	max-width: 340px;
+	margin: 25px auto;
+  }
+  .select-menu .select-btn {
+	display: flex;
+	height: 55px;
+	background: #f8f8f8;
+	padding: 10px;
+	font-size: 18px;
+	font-weight: 400;
+	border-radius: 8px;
+	align-items: center;
+	cursor: pointer;
+	justify-content: space-between;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  .select-menu .options {
+	position: absolute;
+	width: 330px;
+	overflow-y: auto;
+	max-height: 295px;
+	padding: 10px;
+	margin-top: 10px;
+	border-radius: 8px;
+	background: rgb(210, 210, 210);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	animation-name: fadeInDown;
+	-webkit-animation-name: fadeInDown;
+	animation-duration: 0.35s;
+	animation-fill-mode: both;
+	-webkit-animation-duration: 0.35s;
+	-webkit-animation-fill-mode: both;
+  }
+  .select-menu .options .option {
+	display: flex;
+	height: 55px;
+	cursor: pointer;
+	padding: 0 16px;
+	border-radius: 8px;
+	align-items: center;
+	background: rgb(210, 210, 210);
+  }
+  .select-menu .options .option:hover {
+	background: #ffffff;
+  }
+  .select-menu .options .option b {
+	font-size: 25px;
+	margin-right: 12px;
+  }
+  .select-menu .options .option .option-text {
+	font-size: 18px;
+	color: #333;
+  }
+  
+  .select-btn b {
+	font-size: 25px;
+	transition: 0.3s;
+  }
+  
+  
+  .select-menu.active .select-btn b {
+	transform: rotate(-180deg);
+  }
+  .select-menu.active .options {
+	display: block;
+	opacity: 0;
+	z-index: 10;
+	animation-name: fadeInUp;
+	-webkit-animation-name: fadeInUp;
+	animation-duration: 0.4s;
+	animation-fill-mode: both;
+	-webkit-animation-duration: 0.4s;
+	-webkit-animation-fill-mode: both;
+  }
+  
+  @keyframes fadeInUp {
+	from {
+	  transform: translate3d(0, 30px, 0);
+	}
+	to {
+	  transform: translate3d(0, 0, 0);
+	  opacity: 1;
+	}
+  }
+  @keyframes fadeInDown {
+	from {
+	  transform: translate3d(0, 0, 0);
+	  opacity: 1;
+	}
+	to {
+	  transform: translate3d(0, 20px, 0);
+	  opacity: 0;
+	}
+  }

@@ -38,8 +38,9 @@ def UsageGuidelinesguidelines():
     return render_template('UsageGuidelines.html')        
 
 @app.route('/Login')
-def AddCredits():
-    return render_template('login.html')  
+def Login():
+    return render_template('login.html') 
+  
 
 @app.route('/Account')
 def AccountView():
@@ -54,31 +55,64 @@ def ai():
 @app.route('/askAI',methods = ['POST','GET'])
 def callPythonScriptPA():
     # requirement send from js
-    type = request.args.get('type')
+    TestCaseType = str(request.args.get('type'))
     temperature = float(request.args.get('complexity'))
     # print(temperature)
 
-    if type== "testcases":
-        requirement = "You are a software test manager at a company. Write 30 test cases for "+request.args.get('requirement')
+
+    if TestCaseType == 'FTC':
+        requirement =  "Write 30 functional test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        
+    if TestCaseType == 'ETC':
+        requirement =  "Write 30 Edge test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'NTC':
+        requirement =  "Write 30 Negative test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'UFTC':
+        requirement =  "Write 30 User flow test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'PTC':
+        requirement =  "Write 30 Performance test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'STC':
+        requirement =  "Write 30 Security test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'UIUCTC':
+        requirement =  "Write 30 UI and UX test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
     
-    if type== "userstories":
-        requirement = "Write 30 user stories for "+request.args.get('requirement')
-   
-    else:
-         requirement = "Write 30 test cases for "+request.args.get('requirement') + " Do not repeat the phrases"
+    if TestCaseType == 'MCUI':
+        requirement =  "Write 10 Most common user inputs for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        
+    if TestCaseType == 'SBREAK':
+        requirement =  "Write 10 Scenarios where this feature might break. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'UNEXPECTED':
+        requirement =  "What are 10 unexpected ways that users might use this feature? " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+
+    if TestCaseType == 'BUG':
+        requirement =  "Write a bug report for a defect. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+           
+    # else:
+    #       requirement =  "Write 30 test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
 
 
     outputTestCases = openai.Completion.create(
     model="text-davinci-003",
     prompt=requirement,
     temperature=temperature,
-    max_tokens=1000,
+    max_tokens=800,
     top_p=1,
-    frequency_penalty=0.0,
-    presence_penalty=0.0
+    frequency_penalty=0.98,
+    presence_penalty=0.98,
+    # best_of=2
+    # logprobs=5
+    # stop="\n",
+    # n=5
+
     )
     
-    # print(outputTestCases)
+    print(requirement)
     return outputTestCases
 
 
@@ -123,8 +157,8 @@ def create_checkout_session():
 
     try:
         checkout_session = stripe.checkout.Session.create(
-            success_url=domain_url + '/?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=domain_url + '/',
+            success_url=domain_url + '/Account?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=domain_url + '/Account',
             mode='payment',
             customer_email=customer_email,
             line_items=[{
@@ -190,7 +224,7 @@ def webhook_received():
 
         #first  pip3 install firebase_admin
         if not firebase_admin._apps:
-            cred = credentials.Certificate("static/admininfoforfirebase.json")
+            cred = credentials.Certificate("admininfoforfirebase.json")
             firebase_admin.initialize_app(cred, {
                 'databaseURL': 'https://testera-club-default-rtdb.firebaseio.com/'
             })
@@ -202,12 +236,16 @@ def webhook_received():
 
         # get the user id of the email from db to add credits 
         userIdToUpdate = dict_values[0]['userId']
-        creditsPurchased = 100
-        # if amount_total==20000:
-        #     creditsPurchased = 100
+        creditsPurchased = 0
 
-        # if amount_total==40000:   
-        #     creditsPurchased = 200
+        if 25000 <= amount_total <= 35000:
+            creditsPurchased = 100
+
+        if 55000 <= amount_total <= 65000:   
+            creditsPurchased = 210
+        
+        if 250000 <= amount_total <= 350000:  
+            creditsPurchased = 1000    
 
         
         creditstoadd = dict_values[0]['creditsRemaining'] + creditsPurchased
@@ -219,12 +257,12 @@ def webhook_received():
         currenttime = time.time()
 
         ref2 = db.reference('myCreditsKaLog/')
-        data = {"createdDate": currenttime, "creditMessage":"Payment of " +currency + " " +str(amount_total) +" with Stripe payment id " + id +" payment_status --"+payment_status + " order status --"+status, "creditsCredited": creditsPurchased ,"creditsDebited":0 ,"userId": userIdToUpdate}
+        data = {"createdDate": currenttime, "creditMessage":"Payment of " +currency + " " +str(amount_total) +" payment_status --"+payment_status + " order status --"+status, "creditsCredited": creditsPurchased ,"creditsDebited":0 ,"userId": userIdToUpdate}
         ref2.push(data)
 
         # update revenue table
         ref3 = db.reference('RevenueLog/')
-        data = {"createdDate": currenttime, " currency ": currency ,"amount_total":amount_total,"userId": userIdToUpdate, "creditsPurchased": creditsPurchased}
+        data = {"createdDate": currenttime, " currency ": currency ,"amount_total":amount_total,"userId": userIdToUpdate, "creditsPurchased": creditsPurchased, "StripePaymentID": id}
         ref3.push(data)
 
     return jsonify({'status': 'success'})
