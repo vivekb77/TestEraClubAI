@@ -1,6 +1,6 @@
 Gunicorn
 flask
 openai
-dotenv
+python-dotenv
 stripe
 firebase_admin
