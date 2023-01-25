@@ -20,16 +20,17 @@
 	<div class="page-content">
 		<div class="form-v4-content">
 			<form class="form-detail" method="POST">
-				<h2>TestEra.Club</h2>
+				<h2>TestEra AI</h2>
 				<h4>Your AI Testing Assistant</h4>
 				
 				<div class="form-row">
-					
-					<label>Generate Test Cases for any requirement.</label>
-				
-					<label>The best way to get better results is to ask your requirements multiple times with different wording and different complexity values. A large number of possible test cases an be generated this way.</label>
-				
-					<textarea maxlength="500" id="user_requirement" rows="20" cols="50" class="input-text"></textarea>
+					<label>Not a replacement for human Testers. A tool to generate ideas for writing better and faster test cases. <a href="/ContactUs" target="_blank">Suggestions?</a><br/></label>
+					<label>Enter detailed requirements to Generate Test Cases or Just paste the user stories from BA/PO.</label>
+					<br/>
+
+					<textarea class="textarea" maxlength="500" id="user_requirement" rows="20" cols="50" class="input-text"></textarea>
+					<br/>
+					<br/>
 					<label>What type of test cases?</label>
 				
 
@@ -37,7 +38,7 @@
 				
 				<div class="select-menu" id="selectMenu1" >
 					<div class="select-btn" id="selectMenu">
-					  <span class="sBtn-text">Select an option</span>
+					  <span class="sBtn-text">Select Test Cases type</span>
 					  <b class="bx bx-chevron-down">⬆︎</b>
 					</div>
 				  
@@ -46,31 +47,34 @@
 						<option class="option-text" value="FTC">Functional Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="ETC">Edge test cases</option>
+						<option class="option-text" value="ETC">Edge Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="NTC">Negative test cases</option>
+						<option class="option-text" value="NTC">Negative Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="UFTC">User flow test cases</option>
+						<option class="option-text" value="UFTC">User Flow Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="PTC">Performance test cases</option>
+						<option class="option-text" value="PTC">Performance Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="STC">Security test cases</option>
+						<option class="option-text" value="STC">Security Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="UIUCTC">UI and UX test cases</option>
+						<option class="option-text" value="UIUCTC">UI and UX Test Cases</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="MCUI">Most common user inputs</option>
+						<option class="option-text" value="MCUI">Most common User inputs</option>
+					  </li>
+					  <li class="option">
+						<option class="option-text" value="PRE">Preconditions for a requirement</option>
 					  </li>
 					  <li class="option">
 						<option class="option-text" value="SBREAK">Scenarios where this feature might break</option>
 					  </li>
 					  <li class="option">
-						<option class="option-text" value="UNEXPECTED">What are some unexpected ways that users might use this feature?</option>
+						<option class="option-text" value="UNEXPECTED">Some unexpected ways that users might use this feature</option>
 					  </li>
 					  <li class="option">
 						<option class="option-text" value="BUG">Create a bug report for a defect</option>
@@ -80,11 +84,14 @@
 				  </div>
 
 				<div class="form-row-last">
-					<label style="color: red" id="validation"></label>
+					
 					<label>Set Complexity. Try 9 for more creative outputs, and 0 for well-defined outputs.</label>
 					<div class="value">9</div>
 					<input id="complexityrange" type="range" min="0" max="10" step="1" value="9">	
 					<br/>
+					<br/>
+
+					<label style="color: red" id="validation"></label>
 					<input id="submitRequirements_TestCases" method="POST" type="button" value="Generate" class="register" onclick="gatherTestCasesDataToSend()">
 					<input id="clearBox" type="button" value="Clear" class="register" onclick="clearAll()">
 					<input id="LogInButton" type="button" value="Sign In" class="register1" onclick="logIn()">
@@ -102,26 +109,26 @@
 			<div class="form-left">
 				<h2 id="topOutputHeading">Output</h2>
 				
+				<h5 id="outputLabelComplexity"></h5>
+				
+				
 				<div id="loader" class="loader">
 					<div class="inner one"></div>
 					<div class="inner two"></div>
 					<div class="inner three"></div>
 				  </div>
+				  <br/>
 
-				<p id="outputAnswerToDisplay" class="text-1">Your AI generated output will appear here.
-					<br/>
-					<br/>
-					 TestEra.Club is your virtual testing assistant that can: <br/>
-					- Generate test cases<br/>
-					
-					<br/>
-					Ask your requirements multiple times with different wording and then put everything together.
-				</p>
+				<!-- <p id="outputAnswerToDisplay" class="text-1">Your AI generated output will appear here.
+				</p> -->
 			
+				<textarea class="textarea1" maxlength="5000" id="outputAnswerToDisplay" rows="1000" cols="50"></textarea>
+				
 				
 				<div class="form-left-last">
 					<input id="shareButton" type="button" class="account" value="Share this" onclick="shareURL()">
 					<input id="copyButton" type="button" class="account" value="Copy Output" onclick="copyOutput()">
+					<!-- <input id="showHistoryButton" type="button" class="account" value="History" onclick="showHistory()"> -->
 				</div>
 				
 
@@ -142,9 +149,9 @@
 				<div class="form-row">
 					<!-- <h5>1 Credit = 1 Query Run</h5> -->
 					<h2 id="creditsLeft"></h2>
-					<h2>Improve the efficiency of your team</h2>
+					<!-- <h2>Improve the efficiency of your team</h2> -->
 					<!-- <h4>New user offer. Get 100 credits for <s>₹400</s> ₹200</h4> -->
-					<h4><b>Team leaders and managers.</b> Get Testera to help your team generate test cases with ease.</h4>
+					<!-- <h4><b>Team leaders and managers.</b> Get Testera to help your team generate test cases with ease.</h4> -->
 					<label style="color: red" id="validation1"></label>
 					<input id="goToAccount" type="button" value="Add Credits" class="register" onclick="AddCredits()">
 					<input id="goToAccount1" type="button" value="Manage Credits" class="register" onclick="AddCredits()">
@@ -155,18 +162,16 @@
 			<div class="form-left">
 				<div class="form-left-last">
 					
-						<label id="loggedinemail"></label><br/>
+						<label id="loggedinemail"></label>
 						<input id="logoutButton" type="button" class="account" value="LogOut" onclick="logOut()"><br/>
 						<div class="form-row-last">
 							<label></label><a href="/ContactUs" target="_blank">Contact Us</a><br/>
 							<label></label><a href="/TermsOfService" target="_blank">Terms of Service</a><br/>
 							<label></label><a href="/PrivacyPolicy" target="_blank">Privacy Policy</a><br/>
 							<label></label><a href="/UsageGuidelines" target="_blank">Usage Guidelines</a>
-							<br/><br/>
-							<a href="https://www.producthunt.com/posts/testera-ai?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-testera&#0045;ai" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=372116&theme=neutral" alt="TestEra&#0032;AI - Write&#0032;Test&#0032;Cases&#0032;and&#0032;User&#0032;stories&#0032;with&#0032;AI | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>							
+							
 							<br/>
-							<br/>
-							<a href="https://twitter.com/TestEra_Club" target="_blank">Follow us on Twitter</a>
+							<a href="https://twitter.com/TestEraAI" target="_blank">Follow us on Twitter</a>
 							<!-- <label>Do not enter personal or sensitive information.</label><br/> -->
 						</div>
 				</div>

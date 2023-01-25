@@ -1,43 +1,5 @@
 
-var elem = document.querySelector('input[type="range"]');
 
-var rangeValue = function () {
-    var newValue = elem.value;
-    var target = document.querySelector('.value');
-    target.innerHTML = newValue;
-}
-
-elem.addEventListener("input", rangeValue);
-
-getDropDownListValue()
-function getDropDownListValue(){
-    var optionMenu = document.querySelector(".select-menu"),
-    selectBtn = optionMenu.querySelector(".select-btn"),
-    options = optionMenu.querySelectorAll(".option"),
-    
-    sBtn_text = optionMenu.querySelector(".sBtn-text");
-
-  
-  selectBtn.addEventListener("click", () =>
-    optionMenu.classList.toggle("active")
-  );
-  
-  options.forEach((option) => {
-    option.addEventListener("click", () => {
-      let selectedOption = option.querySelector(".option-text").innerText;
-      sBtn_text.innerText = selectedOption;
-      
-
-      let selectedOption1 = option.querySelector(".option-text").value;
-      
-      sBtn_text.value = selectedOption1;
-
-      optionMenu.classList.remove("active");
-      
-  
-    });
-  });
-}
 
 
 //login start
@@ -214,7 +176,10 @@ function gatherTestCasesDataToSend() {
             document.getElementById('validation').innerText = "";
 
             var showProgress = document.getElementById('outputAnswerToDisplay');
-            showProgress.innerText = "Thinking...This may take a few seconds. Please Wait...";
+            showProgress.value = "Thinking...This may take a few seconds. Please Wait...";
+
+            const outputLabelComplexity = document.getElementById('outputLabelComplexity');
+            outputLabelComplexity.innerText=  "";
 
 
             document.getElementById('submitRequirements_TestCases').value = "Thinking...";
@@ -275,7 +240,7 @@ function moderateContent(queryByUser, selectedOptionForTestCases, complexity) {
         // if value is true don't display output and show warning
         if (isQueryContentBad == "true") {
             document.getElementById('validation').innerText = "This Query violates our content policies, no output is displayed.";
-            document.getElementById('outputAnswerToDisplay').innerText = "This Query violates our content policies, no output is displayed.";
+            document.getElementById('outputAnswerToDisplay').value = "This Query violates our content policies, no output is displayed.";
 
             document.getElementById('topOutputHeading').innerText = "Bad request";
             document.getElementById('submitRequirements_TestCases').value = "Generate";
@@ -317,11 +282,14 @@ function askAI(queryByUser, selectedOptionForTestCases, complexity) {
        responsefromAI = request.responseText //response from AI 
        
         if(request.status ==200){
+        debitACredit();
         displayOutput(responsefromAI);   //display the resonse on UI
+        getRemainingCredits();
+        debitACreditLog();
         }
         else{
             document.getElementById('validation').innerText = "Some error occurred, please refresh the page and try again";
-            document.getElementById('outputAnswerToDisplay').innerText = "Some error occurred, please refresh the page and try again";
+            document.getElementById('outputAnswerToDisplay').value = "Some error occurred, please refresh the page and try again";
         }
     }
 
@@ -339,18 +307,75 @@ function displayOutput(responsefromAI) {
 
     // convert data into JSON object
     var parsedData = JSON.parse(responsefromAI);
-
-    let cleanData = parsedData.choices[0].text.trim();
+    
     let totaltokensused1 = parsedData.usage.total_tokens;
     let querytokensused1 = parsedData.usage.prompt_tokens;
     let answertokensused1 = parsedData.usage.completion_tokens;
 
     document.getElementById("loader").setAttribute("hidden", "");
+    document.getElementById("outputAnswerToDisplay").value = "";
 
-    const outputLabel = document.getElementById('outputAnswerToDisplay');
-    outputLabel.innerText = "Complexity = " + complexity * 10 + "\n\n" + cleanData.slice(0, 5000);
+    cleanDataArray = []
+    for (z = 0; z < parsedData.choices.length; z++){
+       
+        let cleanData = parsedData.choices[z].text.trim();
+       
+        var cleanDataObj =
+        {
+            "cleanData": cleanData,
+        };
+        cleanDataArray.push(cleanDataObj)
+    }
+
+    // to add data to a new line
+    newlinesData= [];
+
+    if(selectedOptionForTestCases == "FTC" || selectedOptionForTestCases == "ETC"){
+        for (w = 0; w < cleanDataArray.length; w++) {
+            newlinesData[w] = "\n" + cleanDataArray[w].cleanData + "\n";
+        }
+        newlinesData = newlinesData.join("");    
+    }
+   
+
+    if(selectedOptionForTestCases == "NTC" || selectedOptionForTestCases == "MCUI")
+    {
+    newlinesData = cleanDataArray[0].cleanData.split("\n");
+
+    for (i = 0; i < cleanDataArray.length; i++) {
+        newlinesData[i] = "\n" + newlinesData[i] + "\n";
+    }
+    newlinesData = newlinesData.join("");
+    }
+
+    var i = 0;
+    var txt = newlinesData;
+    var speed = -1000;
+    typeWriter();
     
-    document.getElementById('selectedOption').disabled = false;
+    //code to add a each data to next line when all data is in one choices[].text 
+    // newlinesData = cleanData.split("\n");
+
+    // for (let i = 0; i < newlinesData.length; i++) {
+    //     newlinesData[i] = "\n" + newlinesData[i] + "\n";
+    // }
+    // newlinesData = newlinesData.join("");
+
+    // const outputLabel = document.getElementById('outputAnswerToDisplay');
+    // outputLabel.value =  newlinesData;
+    
+    function typeWriter() {
+        if (i < txt.length) {
+            document.getElementById("outputAnswerToDisplay").value += txt.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+            
+        }
+    }
+
+    const outputLabelComplexity = document.getElementById('outputLabelComplexity');
+    outputLabelComplexity.innerText=  "Complexity = " + complexity * 10 
+    
      //set the title of answer based on what the query was
 
     if (selectedOptionForTestCases == "FTC") {
@@ -377,11 +402,14 @@ function displayOutput(responsefromAI) {
     if (selectedOptionForTestCases == "MCUI") {
         document.getElementById('topOutputHeading').innerText = "Most common user inputs";
     }
+    if (selectedOptionForTestCases == "PRE") {
+        document.getElementById('topOutputHeading').innerText = "Preconditions for a requirement.";
+    }
     if (selectedOptionForTestCases == "SBREAK") {
         document.getElementById('topOutputHeading').innerText = "Scenarios where this feature might break";
     }
     if (selectedOptionForTestCases == "UNEXPECTED") {
-        document.getElementById('topOutputHeading').innerText = "What are some unexpected ways that users might use this feature?";
+        document.getElementById('topOutputHeading').innerText = "Some unexpected ways that users might use this feature";
     }
     if (selectedOptionForTestCases == "BUG") {
         document.getElementById('topOutputHeading').innerText = "Create a bug report for a defect";
@@ -395,12 +423,13 @@ function displayOutput(responsefromAI) {
     document.getElementById("logoutButton").disabled = false;
 
     // for adding to DB
-    output = cleanData;
+    output = newlinesData;
     totaltokensused = totaltokensused1;
     querytokensused = querytokensused1;
     answertokensused = answertokensused1;
 
-    debitACredit();
+
+    
     addDataToDB();
 
 
@@ -410,7 +439,7 @@ function displayOutput(responsefromAI) {
 
 function clearAll() {
 
-    
+    // getDataOfPlaceholderContent();
 
     document.getElementById('submitRequirements_TestCases').value = "Generate";
     document.getElementById('submitRequirements_TestCases').disabled = false;
@@ -418,16 +447,13 @@ function clearAll() {
 
 
     document.getElementById('topOutputHeading').innerText = "Output";
+    document.getElementById('outputAnswerToDisplay').value = "";
 
     var textAreaplaceholeder = ""
     var textAreaplaceholederText1 = document.getElementById('user_requirement');
     textAreaplaceholederText1.value = textAreaplaceholeder;
 
     document.getElementById('validation').innerText = "";
-
-
-    var placeholderTextLabel = document.getElementById('outputAnswerToDisplay');
-    placeholderTextLabel.innerText = "Your AI generated output will appear here.\n\n TestEra.Club is your virtual testing assistant that can:\n- Generate test cases\n\nAsk your requirements multiple times with different wording and then put everything together."
 
 
     document.getElementById('copyButton').value = "Copy Output";
@@ -472,11 +498,14 @@ function copyOutput() {
     if (selectedOptionForTestCases == "MCUI") {
         type1 = "Most common user inputs";
     }
+    if (selectedOptionForTestCases == "PRE") {
+        type1 = "Preconditions for a requirement";
+    }
     if (selectedOptionForTestCases == "SBREAK") {
         type1 = "Scenarios where this feature might break";
     }
     if (selectedOptionForTestCases == "UNEXPECTED") {
-        type1 = "What are some unexpected ways that users might use this feature?";
+        type1 = "What are some unexpected ways that users might use this feature";
     }
     if (selectedOptionForTestCases == "BUG") {
         type1 = "Create a bug report for a defect";
@@ -661,8 +690,43 @@ function getDataOfSharedQuestion() {
             //when the query id is present in db or is not wrong in url
             if (sharedQueryArray.length > 0)
             {
-                var placeholderTextLabel = document.getElementById('outputAnswerToDisplay');
-                placeholderTextLabel.innerText = "Complexity = " + sharedQueryArray[0].complexity * 10 + "\n\n" + sharedQueryArray[0].output.trim().slice(0, 5000);
+                
+                newlinesData = sharedQueryArray[0].output.trim().slice(0, 5000).split("\n");
+                for (let i = 0; i < newlinesData.length; i++) {
+                    newlinesData[i] = "\n" + newlinesData[i];
+                }
+                newlinesData = newlinesData.join("");
+        
+
+               
+                if(selectedOptionForTestCases == "NTC")
+                {
+                newlinesData = sharedQueryArray[0].output.split("\n");
+                console.log(newlinesData) 
+
+                for (let i = 0; i < sharedQueryArray.length; i++) {
+                    newlinesData[i] = "\n" + newlinesData[i] + "\n";
+                }
+                newlinesData = newlinesData.join("");
+                }
+                // const outputLabel = document.getElementById('outputAnswerToDisplay');
+                // outputLabel.value =  newlinesData;
+
+                var i = 0;
+                var txt = newlinesData;
+                var speed = -1000;
+
+                typeWriter();
+                function typeWriter() {
+                if (i < txt.length) {
+                    document.getElementById("outputAnswerToDisplay").innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+                }
+
+                const outputLabelComplexity = document.getElementById('outputLabelComplexity');
+                outputLabelComplexity.innerText=  "Complexity = " + sharedQueryArray[0].complexity * 10
 
                 var textAreaplaceholederText1 = document.getElementById('user_requirement');
                 textAreaplaceholederText1.value = sharedQueryArray[0].input.trim();     
@@ -692,11 +756,14 @@ function getDataOfSharedQuestion() {
                 if (sharedQueryArray[0].selectedOptionForTestCases == "MCUI") {
                     document.getElementById('topOutputHeading').innerText = "Most common user inputs";
                 }
+                if (sharedQueryArray[0].selectedOptionForTestCases == "PRE") {
+                    document.getElementById('topOutputHeading').innerText = "Preconditions for a requirement";
+                }
                 if (sharedQueryArray[0].selectedOptionForTestCases == "SBREAK") {
                     document.getElementById('topOutputHeading').innerText = "Scenarios where this feature might break";
                 }
                 if (sharedQueryArray[0].selectedOptionForTestCases == "UNEXPECTED") {
-                    document.getElementById('topOutputHeading').innerText = "What are some unexpected ways that users might use this feature?";
+                    document.getElementById('topOutputHeading').innerText = "Some unexpected ways that users might use this feature";
                 }
                 if (sharedQueryArray[0].selectedOptionForTestCases == "BUG") {
                     document.getElementById('topOutputHeading').innerText = "Create a bug report for a defect";
@@ -757,7 +824,19 @@ function getDataOfPlaceholderContent() {
             // document.getElementById('user_requirement').placeholder = "Eg. Ecommerce buy and shipping journey";
             document.getElementById("loader").setAttribute("hidden", "");
             document.getElementById('user_requirement').placeholder = placeholderTextArray[randomNum].placeholderText;
+            
+            var i = 0;
+            var txt = "\n\nGenerate\n\n-Functional Test Cases \n-Edge test cases \n-Negative test cases \n-User flow test cases \n-Performance test cases \n-Security test cases \n-UI and UX test cases \n-Most common user inputs \n-Scenarios where this feature might break \n-What are some unexpected ways that users might use this feature?\n-Create a bug report for a defect\n\n\nThe best way to get better results is to ask your requirements multiple times with different wording and different complexity values. A large number of possible test cases an be generated this way."
+            var speed = -1000;
 
+            typeWriter();
+            function typeWriter() {
+            if (i < txt.length) {
+                document.getElementById("outputAnswerToDisplay").placeholder += txt.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            }
+            }
 
         });
 
@@ -913,8 +992,6 @@ function debitACredit() {
         creditsRemaining: firebase.database.ServerValue.increment(-1)
     });
 
-    getRemainingCredits();
-    debitACreditLog();
 }
 
 function debitACreditLog() {
@@ -968,3 +1045,44 @@ function AddCredits(){
     location.replace('/Account');
 }
 
+
+
+var elem = document.querySelector('input[type="range"]');
+
+var rangeValue = function () {
+    var newValue = elem.value;
+    var target = document.querySelector('.value');
+    target.innerHTML = newValue;
+}
+
+elem.addEventListener("input", rangeValue);
+
+getDropDownListValue()
+function getDropDownListValue(){
+    var optionMenu = document.querySelector(".select-menu"),
+    selectBtn = optionMenu.querySelector(".select-btn"),
+    options = optionMenu.querySelectorAll(".option"),
+    
+    sBtn_text = optionMenu.querySelector(".sBtn-text");
+
+  
+  selectBtn.addEventListener("click", () =>
+    optionMenu.classList.toggle("active")
+  );
+  
+  options.forEach((option) => {
+    option.addEventListener("click", () => {
+      let selectedOption = option.querySelector(".option-text").innerText;
+      sBtn_text.innerText = selectedOption;
+      
+
+      let selectedOption1 = option.querySelector(".option-text").value;
+      
+      sBtn_text.value = selectedOption1;
+
+      optionMenu.classList.remove("active");
+      
+  
+    });
+  });
+}

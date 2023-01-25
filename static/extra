@@ -282,3 +282,13 @@ Consider edge cases or unexpected scenarios. These could include situations wher
 Think about how the product might be used in combination with other products or services. For example, if the product is a social media platform, you could consider how it might be used in conjunction with a messaging app or a calendar app.
 
 Consider how the product might be used by different user groups or demographics. For example, if the product is a learning platform, you could consider how it might be used by students of different ages, with different learning styles, or in different languages.
+
+
+
+After you’ve fine-tuned a model, remember that your prompt has to end with the indicator string `->` for the model to start generating completions, rather than continuing with the prompt.
+ Make sure to include `stop=["\n"]` so that the generated texts ends at the expected place.
+Once your model starts training, it'll approximately take 24.84 minutes to train a `curie` model, and less for `ada` and `babbage`. Queue will approximately take half an hour per job ahead of you.
+
+
+After you’ve fine-tuned a model, remember that your prompt has to end with the indicator string `\n\n###\n\n` for the model to start generating completions, rather than continuing with the prompt. Make sure to include `stop=["\n"]` so that the generated texts ends at the expected place.
+Once your model starts training, it'll approximately take 24.84 minutes to train a `curie` model, and less for `ada` and `babbage`. Queue will approximately take half an hour per job ahead of you.
