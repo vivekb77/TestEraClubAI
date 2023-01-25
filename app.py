@@ -17,8 +17,8 @@ from flask import Flask, render_template ,request, redirect, session, jsonify
 app = Flask(__name__)
 
 
-#openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = "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"
+openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = "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"
 
 
 @app.route('/ContactUs')
@@ -62,7 +62,7 @@ def callPythonScriptPA():
 
     if TestCaseType == 'FTC':
         requirement =   request.args.get('requirement')+"->"
-        model="curie:ft-personal-2022-12-28-06-07-46"
+        model="text-davinci-003"
         numberofOutputs=10
         # model="davinci:ft-personal-2022-12-28-06-50-06"
         maxTokens=100
@@ -71,7 +71,7 @@ def callPythonScriptPA():
         requirement =   request.args.get('requirement')+"->"
         # model="curie:ft-personal-2022-12-28-06-07-46"
         numberofOutputs=10
-        model="davinci:ft-personal-2022-12-28-06-50-06"
+        model="text-davinci-003"
         maxTokens=100
 
     if TestCaseType == 'NTC':
@@ -82,16 +82,28 @@ def callPythonScriptPA():
 
     if TestCaseType == 'UFTC':
         requirement =  "Write 30 User flow test cases for the following. "+ "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
 
     if TestCaseType == 'PTC':
         requirement =  "Write 30 Performance test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
 
     if TestCaseType == 'STC':
         requirement =  "Write 15 Security test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
 
     if TestCaseType == 'UIUCTC':
         requirement =  "Write 30 UI and UX test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
-    
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
+
     if TestCaseType == 'MCUI':
         requirement =  "Write 10 Most common user inputs for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
         model="text-davinci-003"
@@ -100,16 +112,27 @@ def callPythonScriptPA():
         
     if TestCaseType == 'PRE':
         requirement =  "Write 10 preconditions for the following requirement. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
-     
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
+
     if TestCaseType == 'SBREAK':
         requirement =  "Write 10 Scenarios where this feature might break. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
 
     if TestCaseType == 'UNEXPECTED':
         requirement =  "What are 10 unexpected ways that users might use this feature? " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500
 
     if TestCaseType == 'BUG':
         requirement =  "Write a bug report for a defect. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
-           
+        model="text-davinci-003"
+        numberofOutputs=1
+        maxTokens=500   
     # else:
     #       requirement =  "Write 30 test cases for the following. " + "Text: \"\"\" " + request.args.get('requirement') + " \"\"\" "
 
