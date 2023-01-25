@@ -1,0 +1,6 @@
+Gunicorn
+flask
+openai
+python-dotenv
+stripe
+firebase_admin
