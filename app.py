@@ -17,8 +17,8 @@ from flask import Flask, render_template ,request, redirect, session, jsonify
 app = Flask(__name__)
 
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-# openai.api_key = "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"
+#openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = "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"
 
 
 @app.route('/ContactUs')
